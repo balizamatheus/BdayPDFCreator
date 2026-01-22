@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Excel de Exemplo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #4A90E2;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #4A90E2 0%, #7ED321 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.6);
+        }
+
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .info h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info li {
+            padding: 8px 0;
+            color: #666;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info li:last-child {
+            border-bottom: none;
+        }
+
+        .info li strong {
+            color: #4A90E2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Criar Excel de Exemplo</h1>
+        <p>Clique no botão abaixo para baixar um arquivo Excel de exemplo com dados de cartões de felicitação.</p>
+        
+        <button class="btn" onclick="downloadExcel()">
+            📥 Baixar Excel de Exemplo
+        </button>
+
+        <div class="info">
+            <h3>📋 Estrutura do Arquivo Excel</h3>
+            <ul>
+                <li><strong>Nome:</strong> Nome completo da pessoa</li>
+                <li><strong>Vocativo:</strong> Tratamento pessoal (ex: Caro João)</li>
+                <li><strong>Data:</strong> Data do evento (ex: 18/01/2026)</li>
+            </ul>
+        </div>
+
+        <p style="margin-top: 20px; font-size: 0.9em;">
+            Após baixar o arquivo, use-o no sistema principal para gerar os cartões PDF.
+        </p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        function downloadExcel() {
+            // Dados de exemplo com datas como objetos Date
+            const dados = [
+                ['Nome', 'Vocativo', 'Data'],
+                ['Cel Av Nicolas Silva Mendes ', 'Ao Senhor', new Date(2026, 2, 5)],  // 05/03/2026
+                ['Maria Santos', 'Prezada Maria', new Date(2026, 0, 20)],  // 20/01/2026
+                ['Pedro Costa', 'Querido Pedro', new Date(2026, 0, 25)],  // 25/01/2026
+                ['Ana Oliveira', 'Estimada Ana', new Date(2026, 0, 30)],  // 30/01/2026
+                ['Carlos Ferreira', 'Amigo Carlos', new Date(2026, 1, 5)]   // 05/02/2026
+            ];
+
+            // Criar workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(dados);
+
+            // Format date column
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let row = range.s.r + 1; row <= range.e.r; row++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: row, c: 2 }); // Column C (Data)
+                if (ws[cellAddress]) {
+                    ws[cellAddress].z = 'dd/mm/yyyy';
+                    ws[cellAddress].t = 'd'; // Set cell type to date
+                }
+            }
+
+            // Adicionar worksheet ao workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Cartões');
+
+            // Download do arquivo
+            XLSX.writeFile(wb, 'modelo_exemplo.xlsx');
+        }
+    </script>
+</body>
+</html>

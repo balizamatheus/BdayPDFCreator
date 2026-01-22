@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Cartões de Felicitação</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Full-Screen Welcome Modal (Photoshop-inspired) -->
+    <div class="welcome-modal" id="welcomeModal">
+        <div class="welcome-content">
+            <!-- Logo and Title -->
+            <div class="welcome-header">
+                <div class="welcome-logo">
+                    <span class="logo-icon-large">🎉</span>
+                </div>
+                <h1 class="welcome-title">BdayPDF Creator</h1>
+                <p class="welcome-subtitle">Gerador de Cartões de Felicitação</p>
+            </div>
+
+            <!-- Upload Areas Grid -->
+            <div class="upload-grid">
+                <!-- Excel Upload Area -->
+                <div class="upload-card" id="welcomeExcelCard">
+                    <div class="upload-card-header">
+                        <div class="upload-card-icon excel-icon">📊</div>
+                        <h2 class="upload-card-title">Excel</h2>
+                    </div>
+                    <div class="upload-card-body">
+                        <div class="upload-dropzone" id="welcomeExcelDropzone">
+                            <div class="dropzone-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <p class="dropzone-text">Arraste seu arquivo Excel aqui</p>
+                            <p class="dropzone-subtext">ou clique para selecionar</p>
+                            <input type="file" id="welcomeExcelInput" accept=".xlsx,.xls" hidden>
+                            <button class="btn-upload" onclick="document.getElementById('welcomeExcelInput').click()">
+                                Selecionar Arquivo
+                            </button>
+                        </div>
+                        <div class="upload-status" id="welcomeExcelStatus" style="display: none;">
+                            <div class="status-icon success-icon">✓</div>
+                            <div class="status-info">
+                                <p class="status-filename" id="welcomeExcelFilename"></p>
+                                <p class="status-size" id="welcomeExcelSize"></p>
+                            </div>
+                            <button class="btn-remove" onclick="resetWelcomeExcel()">✕</button>
+                        </div>
+                    </div>
+                    <div class="upload-card-footer">
+                        <p class="upload-hint">Formatos aceitos: .xlsx, .xls</p>
+                    </div>
+                </div>
+
+                <!-- Template Upload Area -->
+                <div class="upload-card" id="welcomeTemplateCard">
+                    <div class="upload-card-header">
+                        <div class="upload-card-icon template-icon">📄</div>
+                        <h2 class="upload-card-title">Template</h2>
+                    </div>
+                    <div class="upload-card-body">
+                        <div class="upload-dropzone" id="welcomeTemplateDropzone">
+                            <div class="dropzone-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <p class="dropzone-text">Arraste seu template PDF aqui</p>
+                            <p class="dropzone-subtext">ou clique para selecionar</p>
+                            <input type="file" id="welcomeTemplateInput" accept=".pdf" hidden>
+                            <button class="btn-upload" onclick="document.getElementById('welcomeTemplateInput').click()">
+                                Selecionar Arquivo
+                            </button>
+                        </div>
+                        <div class="upload-status" id="welcomeTemplateStatus" style="display: none;">
+                            <div class="status-icon success-icon">✓</div>
+                            <div class="status-info">
+                                <p class="status-filename" id="welcomeTemplateFilename"></p>
+                                <p class="status-size" id="welcomeTemplateSize"></p>
+                            </div>
+                            <button class="btn-remove" onclick="resetWelcomeTemplate()">✕</button>
+                        </div>
+                    </div>
+                    <div class="upload-card-footer">
+                        <p class="upload-hint">Formato aceito: .pdf</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="welcome-actions">
+                <button class="btn-start" id="btnStart" onclick="startApplication()" disabled>
+                    <span class="btn-start-icon">🚀</span>
+                    <span>Iniciar Aplicação</span>
+                </button>
+                <p class="welcome-note">Carregue ambos os arquivos para continuar</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="workbench">
+        <!-- Header -->
+        <header class="workbench-header">
+            <div class="header-logo">
+                <span class="logo-icon">🎉</span>
+                <span class="logo-text">BdayPDF Creator</span>
+            </div>
+            <button class="btn btn-generate" id="generateBatchBtn" onclick="generateAllCards()">
+                <span class="btn-icon">⚡</span>
+                <span>GENERATE BATCH</span>
+            </button>
+        </header>
+
+        <!-- Main Body -->
+        <main class="app-body">
+            <!-- Left Toolbar -->
+            <aside class="toolbar">
+                <div class="toolbar-item" data-tool="select" title="Seleção de Campos">
+                    <div class="toolbar-icon">🖱️</div>
+                    <span class="toolbar-label">Select</span>
+                </div>
+                <div class="toolbar-item" data-tool="text" title="Edição de Texto">
+                    <div class="toolbar-icon">✏️</div>
+                    <span class="toolbar-label">Text</span>
+                </div>
+                <div class="toolbar-item" data-tool="zoom" title="Zoom">
+                    <div class="toolbar-icon">🔍</div>
+                    <span class="toolbar-label">Zoom</span>
+                </div>
+            </aside>
+
+            <!-- Center Canvas -->
+            <section class="canvas-area">
+                <div class="canvas-container">
+                    <div class="canvas-header">
+                        <span class="canvas-title">PDF Preview</span>
+                        <div class="canvas-zoom-controls">
+                            <button class="zoom-btn" onclick="zoomOut()">−</button>
+                            <span class="zoom-level" id="zoomLevel">100%</span>
+                            <button class="zoom-btn" onclick="zoomIn()">+</button>
+                        </div>
+                    </div>
+                    <div class="canvas-content" id="canvasContent">
+                        <!-- PDF Preview Frame -->
+                        <iframe id="pdfPreviewFrame" class="pdf-preview-frame"></iframe>
+                        <!-- Placeholder when no template is loaded -->
+                        <div class="canvas-placeholder" id="canvasPlaceholder">
+                            <div class="placeholder-icon">📄</div>
+                            <p>Carregue um template PDF para visualizar</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Properties Panel -->
+            <aside class="properties-panel">
+                <!-- Upload Section -->
+                <div class="panel-section">
+                    <h3 class="panel-title">📁 Upload Excel</h3>
+                    <div class="upload-box" id="uploadBox">
+                        <div class="upload-icon">📊</div>
+                        <p>Arraste ou clique</p>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+                        <button class="btn btn-sm" onclick="document.getElementById('fileInput').click()">
+                            Selecionar
+                        </button>
+                    </div>
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <div class="file-icon">📊</div>
+                        <div class="file-details">
+                            <p class="file-name" id="fileName"></p>
+                            <p class="file-size" id="fileSize"></p>
+                        </div>
+                        <button class="btn-icon" onclick="resetUpload()">✕</button>
+                    </div>
+                </div>
+
+                <!-- PDF Template Section -->
+                <div class="panel-section">
+                    <h3 class="panel-title">📄 Template PDF</h3>
+                    <div class="upload-box" id="pdfTemplateBox">
+                        <div class="upload-icon">📄</div>
+                        <p>Arraste ou clique</p>
+                        <input type="file" id="pdfTemplateInput" accept=".pdf" hidden>
+                        <button class="btn btn-sm" onclick="document.getElementById('pdfTemplateInput').click()">
+                            Selecionar
+                        </button>
+                    </div>
+                    <div class="file-info" id="pdfTemplateInfo" style="display: none;">
+                        <div class="file-icon">📄</div>
+                        <div class="file-details">
+                            <p class="file-name" id="pdfTemplateName"></p>
+                            <p class="file-size" id="pdfTemplateSize"></p>
+                        </div>
+                        <button class="btn-icon" onclick="resetPDFTemplate()">✕</button>
+                    </div>
+                </div>
+
+                <!-- Field Positioning -->
+                <div class="panel-section" id="fieldPositioning" style="display: none;">
+                    <h3 class="panel-title">📍 Posicionar Campos</h3>
+                    
+                    <div class="field-selector">
+                        <label>Campo atual:</label>
+                        <select id="currentField" onchange="updateCurrentField()">
+                            <option value="Nome">Nome</option>
+                            <option value="Vocativo">Vocativo</option>
+                            <option value="Data">Data</option>
+                        </select>
+                    </div>
+
+                    <div class="field-coordinates">
+                        <div class="coord-input">
+                            <label>X:</label>
+                            <input type="number" id="fieldX" value="105" step="1">
+                        </div>
+                        <div class="coord-input">
+                            <label>Y:</label>
+                            <input type="number" id="fieldY" value="380" step="1">
+                        </div>
+                        <div class="coord-input">
+                            <label>Tamanho:</label>
+                            <input type="number" id="fontSize" value="40" step="1">
+                        </div>
+                        <div class="coord-input">
+                            <label>Alinhar:</label>
+                            <select id="fieldAlign">
+                                <option value="left">Esq</option>
+                                <option value="center">Cen</option>
+                                <option value="right">Dir</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-sm btn-primary" onclick="updateFieldPosition()">Atualizar</button>
+                    </div>
+
+                    <div class="field-list" id="fieldList">
+                        <!-- Field positions will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Data Preview Section -->
+                <div class="panel-section" id="dataPreviewSection" style="display: none;">
+                    <h3 class="panel-title">📋 Prévia dos Dados</h3>
+                    <div class="data-summary" id="dataSummary"></div>
+                    
+                    <!-- Month Tabs -->
+                    <div class="month-tabs" id="monthTabs"></div>
+                    
+                    <!-- Data Table -->
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Vocativo</th>
+                                    <th>Data</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="panel-section" id="resultsPanelSection" style="display: none;">
+                    <h3 class="panel-title">✅ Resultados</h3>
+                    <div class="results-summary" id="resultsSummary"></div>
+                    <div class="results-list" id="resultsList"></div>
+                    <div class="panel-actions">
+                        <button class="btn btn-primary" onclick="downloadAllCards()">
+                            📦 Baixar Todos
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetAll()">
+                            🔄 Resetar
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Progress Modal -->
+        <div class="progress-modal" id="progressModal" style="display: none;">
+            <div class="progress-content">
+                <h3>🔄 Gerando Cartões...</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text" id="progressText">0 de 0 cartões gerados</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7/download.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
