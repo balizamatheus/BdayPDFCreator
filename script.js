@@ -433,6 +433,23 @@ function startApplication() {
     PDFLib.PDFDocument.load(pdfTemplateBytes).then((doc) => {
         pdfTemplateDoc = doc;
 
+        // Update main panel UI to show loaded files
+        // Update Excel upload box
+        if (welcomeExcelFile) {
+            uploadBox.style.display = 'none';
+            fileInfo.style.display = 'flex';
+            fileName.textContent = welcomeExcelFile.name;
+            fileSize.textContent = formatFileSize(welcomeExcelFile.size);
+        }
+
+        // Update PDF template box
+        if (welcomeTemplateFile) {
+            pdfTemplateBox.style.display = 'none';
+            pdfTemplateInfo.style.display = 'flex';
+            pdfTemplateName.textContent = welcomeTemplateFile.name;
+            pdfTemplateSize.textContent = formatFileSize(welcomeTemplateFile.size);
+        }
+
         // Display preview in the main app
         displayPreview();
         fieldPositioning.style.display = 'block';

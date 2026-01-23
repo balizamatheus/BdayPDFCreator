@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Cartões de Felicitação</title>
+    <title>Bday PDF Creator</title>
+    <link rel="icon" type="image/svg+xml" href="src/iconlogo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,9 +14,9 @@
             <!-- Logo and Title -->
             <div class="welcome-header">
                 <div class="welcome-logo">
-                    <span class="logo-icon-large">🎉</span>
+                    <img src="src/iconlogo.svg" alt="BdayPDF Creator Icon" class="logo-icon-large">
+                    <img src="src/textlogo.svg" alt="BdayPDF Creator Text" class="text-logo-large">
                 </div>
-                <h1 class="welcome-title">BdayPDF Creator</h1>
                 <p class="welcome-subtitle">Gerador de Cartões de Felicitação</p>
             </div>
 
@@ -24,7 +25,6 @@
                 <!-- Excel Upload Area -->
                 <div class="upload-card" id="welcomeExcelCard">
                     <div class="upload-card-header">
-                        <div class="upload-card-icon excel-icon">📊</div>
                         <h2 class="upload-card-title">Excel</h2>
                     </div>
                     <div class="upload-card-body">
@@ -60,7 +60,6 @@
                 <!-- Template Upload Area -->
                 <div class="upload-card" id="welcomeTemplateCard">
                     <div class="upload-card-header">
-                        <div class="upload-card-icon template-icon">📄</div>
                         <h2 class="upload-card-title">Template</h2>
                     </div>
                     <div class="upload-card-body">
@@ -109,8 +108,8 @@
         <!-- Header -->
         <header class="workbench-header">
             <div class="header-logo">
-                <span class="logo-icon">🎉</span>
-                <span class="logo-text">BdayPDF Creator</span>
+                <img src="src/iconlogo.svg" alt="BdayPDF Creator Icon" class="logo-icon">
+                <img src="src/textlogo.svg" alt="BdayPDF Creator Text" class="logo-text">
             </div>
             <button class="btn btn-generate" id="generateBatchBtn" onclick="generateAllCards()">
                 <span class="btn-icon">⚡</span>
