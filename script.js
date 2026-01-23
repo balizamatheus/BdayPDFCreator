@@ -1100,25 +1100,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Set body dimensions for glitter effect
+    document.body.style.setProperty("--dw", document.body.clientWidth + "px");
+    document.body.style.setProperty("--dh", document.body.clientHeight + "px");
     
-    // Mouse tracking for glitter effect - track on each individual card
+    // Mouse tracking for glitter effect - unified listener on parent container
+    const uploadContainer = document.querySelector(".upload-grid");
     const cards = document.getElementsByClassName("upload-card");
-    for(const card of cards) {
-        card.onpointermove = e => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top; 
-            
-            card.style.setProperty("--mouse-x", `${x}px`);
-            card.style.setProperty("--mouse-y", `${y}px`);
-            
-            const BOX = card.getBoundingClientRect();
-            const POINT = { x: x, y: y };
-            const RATIO = { x: POINT.x / BOX.width, y: POINT.y / BOX.height };
-            const CENTER = fromCenter( RATIO );
-            // set some css variables referenced in css
-            card.style.setProperty( "--ratio-x", RATIO.x );
-            card.style.setProperty( "--ratio-y", RATIO.y );
+    
+    if (uploadContainer) {
+        uploadContainer.onpointermove = e => {
+            for(const card of cards) {
+                const rect = card.getBoundingClientRect();
+                
+                // Calcula a posição do mouse em relação a CADA card,
+                // mesmo que o mouse não esteja sobre ele no momento.
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Define as variáveis de posição (necessárias para o gradiente)
+                card.style.setProperty("--mouse-x", `${x}px`);
+                card.style.setProperty("--mouse-y", `${y}px`);
+                
+                // Mantém a lógica de RATIO que você já utiliza
+                const RATIO = {
+                    x: x / rect.width,
+                    y: y / rect.height
+                };
+                
+                card.style.setProperty("--ratio-x", RATIO.x);
+                card.style.setProperty("--ratio-y", RATIO.y);
+            }
         };
     }
 });
