@@ -1098,4 +1098,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (welcomeModal) {
         welcomeModal.classList.remove('hidden');
     }
+    
+    // Set body dimensions for glitter effect
+    
+    // Mouse tracking for glitter effect - track on each individual card
+    const cards = document.getElementsByClassName("upload-card");
+    for(const card of cards) {
+        card.onpointermove = e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top; 
+            
+            card.style.setProperty("--mouse-x", `${x}px`);
+            card.style.setProperty("--mouse-y", `${y}px`);
+            
+            const BOX = card.getBoundingClientRect();
+            const POINT = { x: x, y: y };
+            const RATIO = { x: POINT.x / BOX.width, y: POINT.y / BOX.height };
+            const CENTER = fromCenter( RATIO );
+            // set some css variables referenced in css
+            card.style.setProperty( "--ratio-x", RATIO.x );
+            card.style.setProperty( "--ratio-y", RATIO.y );
+        };
+    }
 });
+
+// Maths function for glitter effect
+function fromCenter({ x, y }) {
+    return Math.min(Math.max( 0, Math.sqrt( (y - .5) * (y - .5) + (x  - .5) * (x  - .5) ) / .5 ), 1 );
+}
