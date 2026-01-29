@@ -10,7 +10,6 @@ let fieldPositions = {
     'Vocativo': { x: 115, y: 425, size: 20, align: 'left' },
     'Data': { x: 765, y: 490, size: 18, align: 'right' }
 };
-let currentField = 'Nome';
 let dataByMonth = {};
 let currentMonth = null;
 let currentZoom = 100;
@@ -92,11 +91,6 @@ const pdfTemplateInfo = document.getElementById('pdfTemplateInfo');
 const pdfTemplateName = document.getElementById('pdfTemplateName');
 const pdfTemplateSize = document.getElementById('pdfTemplateSize');
 const fieldPositioning = document.getElementById('fieldPositioning');
-const currentFieldSelect = document.getElementById('currentField');
-const fieldX = document.getElementById('fieldX');
-const fieldY = document.getElementById('fieldY');
-const fontSize = document.getElementById('fontSize');
-const fieldAlign = document.getElementById('fieldAlign');
 const fieldList = document.getElementById('fieldList');
 
 // Canvas Elements
@@ -454,6 +448,7 @@ function startApplication() {
         displayPreview();
         fieldPositioning.style.display = 'block';
         updateFieldList();
+        initializeFieldInputs();
         updatePDFPreview();
 
         // Show PDF frame, hide placeholder
@@ -763,6 +758,7 @@ async function handlePDFTemplate(file) {
             // Show field positioning
             fieldPositioning.style.display = 'block';
             updateFieldList();
+            initializeFieldInputs();
             updatePDFPreview();
 
             // Show PDF frame, hide placeholder
@@ -801,23 +797,27 @@ function resetPDFTemplate() {
     updateFieldList();
 }
 
-function updateCurrentField() {
-    currentField = currentFieldSelect.value;
-    const pos = fieldPositions[currentField];
-
-    fieldX.value = pos.x;
-    fieldY.value = pos.y;
-    fontSize.value = pos.size;
-    fieldAlign.value = pos.align || 'left';
+function initializeFieldInputs() {
+    // Initialize inputs with current field positions
+    const fields = ['Nome', 'Vocativo', 'Data'];
+    fields.forEach(field => {
+        const pos = fieldPositions[field];
+        if (pos) {
+            document.getElementById(field.toLowerCase() + 'X').value = pos.x;
+            document.getElementById(field.toLowerCase() + 'Y').value = pos.y;
+            document.getElementById(field.toLowerCase() + 'Size').value = pos.size;
+            document.getElementById(field.toLowerCase() + 'Align').value = pos.align || 'left';
+        }
+    });
 }
 
-function updateFieldPosition() {
-    const field = currentFieldSelect.value;
+function updateFieldPosition(field) {
+    const fieldLower = field.toLowerCase();
     fieldPositions[field] = {
-        x: parseInt(fieldX.value),
-        y: parseInt(fieldY.value),
-        size: parseInt(fontSize.value),
-        align: fieldAlign.value
+        x: parseInt(document.getElementById(fieldLower + 'X').value),
+        y: parseInt(document.getElementById(fieldLower + 'Y').value),
+        size: parseInt(document.getElementById(fieldLower + 'Size').value),
+        align: document.getElementById(fieldLower + 'Align').value
     };
 
     updateFieldList();
@@ -1138,3 +1138,16 @@ document.addEventListener('DOMContentLoaded', () => {
 function fromCenter({ x, y }) {
     return Math.min(Math.max( 0, Math.sqrt( (y - .5) * (y - .5) + (x  - .5) * (x  - .5) ) / .5 ), 1 );
 }
+
+// Accordion functionality for Field Positioning
+document.addEventListener('DOMContentLoaded', function() {
+    const fieldPositioning = document.getElementById('fieldPositioning');
+    if (fieldPositioning) {
+        const toggle = fieldPositioning.querySelector('.accordion-toggle');
+        if (toggle) {
+            toggle.addEventListener('click', function() {
+                fieldPositioning.classList.toggle('active');
+            });
+        }
+    }
+});

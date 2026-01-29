@@ -291,6 +291,36 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
+.accordion-section .panel-title {
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+}
+
+.accordion-section.active .panel-title {
+    padding: 0 0 15px 0;
+    margin-bottom: 0;
+}
+
+.accordion-icon {
+    transition: transform 0.3s ease;
+    margin-left: auto;
+    font-size: 12px;
+}
+
+.accordion-section.active .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.panel-content {
+    display: none;
+    overflow: hidden;
+}
+
+.accordion-section.active .panel-content {
+    display: block;
+}
+
 .panel-title {
     font-size: 14px;
     font-weight: 600;
@@ -467,10 +497,29 @@ body {
 }
 
 .field-coordinates {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 15px;
+}
+
+.coord-input {
+    flex: 1;
+    min-width: 60px;
+}
+
+.field-groups {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
 }
 
 .coord-input {

@@ -205,44 +205,99 @@
                 </div>
 
                 <!-- Field Positioning -->
-                <div class="panel-section" id="fieldPositioning" style="display: none;">
-                    <h3 class="panel-title">📍 Posicionar Campos</h3>
-                    
-                    <div class="field-selector">
-                        <label>Campo atual:</label>
-                        <select id="currentField" onchange="updateCurrentField()">
-                            <option value="Nome">Nome</option>
-                            <option value="Vocativo">Vocativo</option>
-                            <option value="Data">Data</option>
-                        </select>
-                    </div>
+                <div class="panel-section accordion-section" id="fieldPositioning" style="display: none;">
+                    <h3 class="panel-title accordion-toggle">Posicionar Campos <span class="accordion-icon">▼</span></h3>
 
-                    <div class="field-coordinates">
-                        <div class="coord-input">
-                            <label>X:</label>
-                            <input type="number" id="fieldX" value="105" step="1">
-                        </div>
-                        <div class="coord-input">
-                            <label>Y:</label>
-                            <input type="number" id="fieldY" value="380" step="1">
-                        </div>
-                        <div class="coord-input">
-                            <label>Tamanho:</label>
-                            <input type="number" id="fontSize" value="40" step="1">
-                        </div>
-                        <div class="coord-input">
-                            <label>Alinhar:</label>
-                            <select id="fieldAlign">
-                                <option value="left">Esq</option>
-                                <option value="center">Cen</option>
-                                <option value="right">Dir</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-sm btn-primary" onclick="updateFieldPosition()">Atualizar</button>
-                    </div>
+                    <div class="panel-content">
+                        <div class="field-groups">
+                            <!-- Nome Field -->
+                            <div class="field-group">
+                                <h4>Nome</h4>
+                                <div class="field-coordinates">
+                                    <div class="coord-input">
+                                        <label>X:</label>
+                                        <input type="number" id="nomeX" value="105" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Y:</label>
+                                        <input type="number" id="nomeY" value="380" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Tamanho:</label>
+                                        <input type="number" id="nomeSize" value="40" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Alinhar:</label>
+                                        <select id="nomeAlign">
+                                            <option value="left">Esq</option>
+                                            <option value="center">Cen</option>
+                                            <option value="right">Dir</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" onclick="updateFieldPosition('Nome')">Atualizar</button>
+                                </div>
+                            </div>
 
-                    <div class="field-list" id="fieldList">
-                        <!-- Field positions will be listed here -->
+                            <!-- Vocativo Field -->
+                            <div class="field-group">
+                                <h4>Vocativo</h4>
+                                <div class="field-coordinates">
+                                    <div class="coord-input">
+                                        <label>X:</label>
+                                        <input type="number" id="vocativoX" value="115" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Y:</label>
+                                        <input type="number" id="vocativoY" value="425" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Tamanho:</label>
+                                        <input type="number" id="vocativoSize" value="20" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Alinhar:</label>
+                                        <select id="vocativoAlign">
+                                            <option value="left">Esq</option>
+                                            <option value="center">Cen</option>
+                                            <option value="right">Dir</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" onclick="updateFieldPosition('Vocativo')">Atualizar</button>
+                                </div>
+                            </div>
+
+                            <!-- Data Field -->
+                            <div class="field-group">
+                                <h4>Data</h4>
+                                <div class="field-coordinates">
+                                    <div class="coord-input">
+                                        <label>X:</label>
+                                        <input type="number" id="dataX" value="765" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Y:</label>
+                                        <input type="number" id="dataY" value="490" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Tamanho:</label>
+                                        <input type="number" id="dataSize" value="18" step="1">
+                                    </div>
+                                    <div class="coord-input">
+                                        <label>Alinhar:</label>
+                                        <select id="dataAlign">
+                                            <option value="left">Esq</option>
+                                            <option value="center">Cen</option>
+                                            <option value="right">Dir</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" onclick="updateFieldPosition('Data')">Atualizar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-list" id="fieldList">
+                            <!-- Field positions will be listed here -->
+                        </div>
                     </div>
                 </div>
 
