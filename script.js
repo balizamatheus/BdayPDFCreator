@@ -6,8 +6,8 @@ let templateType = 'pdf';
 let pdfTemplateBytes = null;
 let pdfTemplateDoc = null;
 let fieldPositions = {
-    'Nome': { x: 105, y: 380, size: 40, align: 'left' },
-    'Vocativo': { x: 115, y: 425, size: 20, align: 'left' },
+    'Nome': { x: 107, y: 380, size: 27, align: 'left' },
+    'Vocativo': { x: 115, y: 412, size: 14, align: 'left' },
     'Data': { x: 765, y: 490, size: 18, align: 'right' }
 };
 let dataByMonth = {};
@@ -1039,12 +1039,21 @@ function updateZoom() {
     pdfPreviewFrame.style.transformOrigin = 'center center';
 }
 
+// Helper function to remove accents from Portuguese characters
+function removeAccents(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 async function downloadSingleCard(index) {
     const data = excelData[index];
     const pdfBytes = await generatePDFTemplateCard(data);
 
     if (pdfBytes) {
-        const safeName = (data.Nome || 'cartao').replace(/[^a-zA-Z0-9]/g, '_');
+        // Remove accents, replace spaces with underscores, and remove other special characters
+        let safeName = data.Nome || 'cartao';
+        safeName = removeAccents(safeName);
+        safeName = safeName.replace(/\s+/g, '_');  // Replace spaces with underscores
+        safeName = safeName.replace(/[^a-zA-Z0-9_]/g, '');  // Remove other special characters except underscores
         download(new Blob([pdfBytes], { type: 'application/pdf' }), `${safeName}.pdf`);
     }
 }
@@ -1072,17 +1081,33 @@ function displayResults() {
     });
 }
 
-function downloadAllCards() {
-    generatedPDFs.forEach(pdf => {
-        const url = URL.createObjectURL(pdf.blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = pdf.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
+async function downloadAllCards() {
+    if (generatedPDFs.length === 0) {
+        showErrorAlert('Nenhum PDF gerado para baixar.');
+        return;
+    }
+
+    try {
+        // Create a new ZIP file
+        const zip = new JSZip();
+
+        // Add all PDFs to the ZIP
+        generatedPDFs.forEach(pdf => {
+            zip.file(pdf.name, pdf.blob);
+        });
+
+        // Generate the ZIP file
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+        // Download the ZIP file
+        const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        download(zipBlob, `cartoes_${timestamp}.zip`);
+
+        showSuccessAlert(`✅ ${generatedPDFs.length} cartões baixados como arquivo ZIP!`);
+    } catch (error) {
+        console.error('Erro ao criar arquivo ZIP:', error);
+        showErrorAlert('Erro ao criar arquivo ZIP: ' + error.message);
+    }
 }
 
 function resetUpload() {
@@ -1204,6 +1229,9 @@ async function generateAllPDFTemplateCards() {
     progressModal.style.display = 'flex';
     generatedPDFs = [];
 
+    // Track used filenames to handle duplicates
+    const usedFilenames = {};
+
     // Get selected data
     const selectedData = excelData.filter((_, index) => selectedIndices.has(index));
     const totalSelected = selectedData.length;
@@ -1219,11 +1247,25 @@ async function generateAllPDFTemplateCards() {
             const pdfBytes = await generatePDFTemplateCard(data);
 
             if (pdfBytes) {
-                const safeName = (data.Nome || 'cartao').replace(/[^a-zA-Z0-9]/g, '_');
+                // Remove accents, replace spaces with underscores, and remove other special characters
+                let safeName = data.Nome || 'cartao';
+                safeName = removeAccents(safeName);
+                safeName = safeName.replace(/\s+/g, '_');  // Replace spaces with underscores
+                safeName = safeName.replace(/[^a-zA-Z0-9_]/g, '');  // Remove other special characters except underscores
+
+                // Handle duplicate filenames by adding a counter
+                let filename = `${safeName}.pdf`;
+                let counter = 1;
+                while (usedFilenames[filename]) {
+                    filename = `${safeName}_${counter}.pdf`;
+                    counter++;
+                }
+                usedFilenames[filename] = true;
+
                 const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
 
                 generatedPDFs.push({
-                    name: `${safeName}.pdf`,
+                    name: filename,
                     blob: pdfBlob,
                     data: data
                 });
