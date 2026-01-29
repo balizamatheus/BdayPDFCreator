@@ -946,8 +946,8 @@ function resetPDFTemplate() {
 
     // Reset field positions to default
     fieldPositions = {
-        'Nome': { x: 105, y: 380, size: 40, align: 'left' },
-        'Vocativo': { x: 115, y: 425, size: 20, align: 'left' },
+        'Nome': { x: 107, y: 380, size: 27, align: 'left' },
+        'Vocativo': { x: 115, y: 412, size: 14, align: 'left' },
         'Data': { x: 765, y: 490, size: 18, align: 'right' }
     };
 
