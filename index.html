@@ -98,7 +98,6 @@
             <!-- Action Button -->
             <div class="welcome-actions">
                 <button class="btn-start" id="btnStart" onclick="startApplication()" disabled>
-                    <span class="btn-start-icon">🚀</span>
                     <span>Iniciar Aplicação</span>
                 </button>
                 <p class="welcome-note">Carregue ambos os arquivos para continuar</p>
@@ -303,7 +302,7 @@
 
                 <!-- Data Preview Section -->
                 <div class="panel-section" id="dataPreviewSection" style="display: none;">
-                    <h3 class="panel-title">📋 Prévia dos Dados</h3>
+                    <h3 class="panel-title">Prévia dos Dados</h3>
                     <div class="data-summary" id="dataSummary"></div>
                     
                     <!-- Month Tabs -->
@@ -314,6 +313,9 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
+                                    <th class="checkbox-column">
+                                        <input type="checkbox" id="selectAllCurrentMonth" onchange="toggleSelectAllCurrentMonth()">
+                                    </th>
                                     <th>Nome</th>
                                     <th>Vocativo</th>
                                     <th>Data</th>

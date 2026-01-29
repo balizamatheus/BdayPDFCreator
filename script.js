@@ -14,6 +14,10 @@ let dataByMonth = {};
 let currentMonth = null;
 let currentZoom = 100;
 
+// Selection tracking
+let selectedIndices = new Set();
+let selectedMonths = new Set();
+
 // Welcome Modal State
 let welcomeExcelFile = null;
 let welcomeTemplateFile = null;
@@ -412,7 +416,7 @@ function resetWelcomeTemplate() {
 function checkWelcomeFilesLoaded() {
     if (welcomeExcelData && welcomeTemplateBytes) {
         btnStart.disabled = false;
-        btnStart.innerHTML = '<span class="btn-start-icon">🚀</span><span>Iniciar Aplicação</span>';
+        btnStart.innerHTML = '<span>Iniciar Aplicação</span>';
     } else {
         btnStart.disabled = true;
     }
@@ -611,7 +615,7 @@ function formatFileSize(bytes) {
 
 function displayPreview() {
     dataPreviewSection.style.display = 'block';
-    dataSummary.textContent = `📊 Total de cartões: ${excelData.length}`;
+    updateSelectionCounter();
 
     // Group data by month
     groupDataByMonth();
@@ -673,13 +677,24 @@ function displayDataByMonth() {
             tab.dataset.month = month;
 
             const totalCount = dataByMonth[month].length;
+            const selectedCount = dataByMonth[month].filter(row => selectedIndices.has(row.originalIndex)).length;
 
             tab.innerHTML = `
+                <input type="checkbox" class="month-tab-checkbox" data-month="${month}"
+                    ${selectedCount === totalCount ? 'checked' : ''}
+                    onchange="toggleMonthSelection('${month}')">
                 <span class="month-title">${month}</span>
-                <span class="month-count">${totalCount}</span>
+                <span class="month-count">${selectedCount}/${totalCount}</span>
             `;
 
-            tab.addEventListener('click', () => showMonthContent(month));
+            // Update month tab status
+            updateMonthTabStatus(month);
+
+            tab.addEventListener('click', (e) => {
+                if (e.target.type !== 'checkbox') {
+                    showMonthContent(month);
+                }
+            });
             monthTabs.appendChild(tab);
         }
     });
@@ -712,7 +727,13 @@ function showMonthContent(month) {
     if (dataByMonth[month]) {
         dataByMonth[month].forEach((row, idx) => {
             const tr = document.createElement('tr');
+            const isSelected = selectedIndices.has(row.originalIndex);
             tr.innerHTML = `
+                <td class="checkbox-column">
+                    <input type="checkbox" class="record-checkbox" data-index="${row.originalIndex}"
+                        ${isSelected ? 'checked' : ''}
+                        onchange="toggleRecordSelection(${row.originalIndex})">
+                </td>
                 <td>${row.Nome || '-'}</td>
                 <td>${row.Vocativo || '-'}</td>
                 <td>${row.Data || '-'}</td>
@@ -725,6 +746,142 @@ function showMonthContent(month) {
             dataTableBody.appendChild(tr);
         });
     }
+
+    // Update select all checkbox state
+    updateSelectAllCheckbox();
+}
+
+// Selection Management Functions
+function toggleMonthSelection(month) {
+    const monthData = dataByMonth[month];
+    if (!monthData) return;
+
+    const checkbox = document.querySelector(`.month-tab-checkbox[data-month="${month}"]`);
+    const shouldSelect = checkbox.checked;
+
+    monthData.forEach(row => {
+        if (shouldSelect) {
+            selectedIndices.add(row.originalIndex);
+        } else {
+            selectedIndices.delete(row.originalIndex);
+        }
+    });
+
+    // Update all checkboxes in the table for this month
+    if (currentMonth === month) {
+        document.querySelectorAll('.record-checkbox').forEach(cb => {
+            cb.checked = shouldSelect;
+        });
+    }
+
+    // Update month tab status
+    updateMonthTabStatus(month);
+    
+    // Update selection counter
+    updateSelectionCounter();
+    
+    // Update select all checkbox
+    updateSelectAllCheckbox();
+}
+
+function toggleRecordSelection(index) {
+    if (selectedIndices.has(index)) {
+        selectedIndices.delete(index);
+    } else {
+        selectedIndices.add(index);
+    }
+
+    // Find which month this record belongs to
+    const month = Object.keys(dataByMonth).find(m =>
+        dataByMonth[m].some(row => row.originalIndex === index)
+    );
+
+    if (month) {
+        updateMonthTabStatus(month);
+    }
+
+    // Update selection counter
+    updateSelectionCounter();
+    
+    // Update select all checkbox
+    updateSelectAllCheckbox();
+}
+
+function toggleSelectAllCurrentMonth() {
+    if (!currentMonth || !dataByMonth[currentMonth]) return;
+
+    const checkbox = document.getElementById('selectAllCurrentMonth');
+    const shouldSelect = checkbox.checked;
+
+    dataByMonth[currentMonth].forEach(row => {
+        if (shouldSelect) {
+            selectedIndices.add(row.originalIndex);
+        } else {
+            selectedIndices.delete(row.originalIndex);
+        }
+    });
+
+    // Update all checkboxes in the table
+    document.querySelectorAll('.record-checkbox').forEach(cb => {
+        cb.checked = shouldSelect;
+    });
+
+    // Update month tab status
+    updateMonthTabStatus(currentMonth);
+    
+    // Update selection counter
+    updateSelectionCounter();
+}
+
+function updateMonthTabStatus(month) {
+    const monthData = dataByMonth[month];
+    if (!monthData) return;
+
+    const totalCount = monthData.length;
+    const selectedCount = monthData.filter(row => selectedIndices.has(row.originalIndex)).length;
+    const tab = document.querySelector(`.month-tab[data-month="${month}"]`);
+    
+    if (!tab) return; // Tab might not exist yet
+    
+    const checkbox = tab.querySelector(`.month-tab-checkbox[data-month="${month}"]`);
+    const countSpan = tab.querySelector('.month-count');
+
+    if (!checkbox || !countSpan) return;
+
+    // Update count display
+    countSpan.textContent = `${selectedCount}/${totalCount}`;
+
+    // Remove all status classes
+    tab.classList.remove('selected', 'partial');
+
+    // Update checkbox state
+    if (selectedCount === 0) {
+        checkbox.checked = false;
+    } else if (selectedCount === totalCount) {
+        checkbox.checked = true;
+        tab.classList.add('selected');
+    } else {
+        checkbox.checked = false;
+        tab.classList.add('partial');
+    }
+}
+
+function updateSelectionCounter() {
+    const total = excelData.length;
+    const selected = selectedIndices.size;
+    dataSummary.textContent = `${selected}/${total} cartões selecionados`;
+}
+
+function updateSelectAllCheckbox() {
+    if (!currentMonth || !dataByMonth[currentMonth]) return;
+
+    const checkbox = document.getElementById('selectAllCurrentMonth');
+    if (!checkbox) return;
+
+    const monthData = dataByMonth[currentMonth];
+    const selectedCount = monthData.filter(row => selectedIndices.has(row.originalIndex)).length;
+    
+    checkbox.checked = selectedCount === monthData.length;
 }
 
 // PDF Template handling
@@ -935,6 +1092,8 @@ function resetUpload() {
     dataPreviewSection.style.display = 'none';
     excelData = [];
     dataByMonth = {};
+    selectedIndices.clear();
+    selectedMonths.clear();
 }
 
 function resetAll() {
@@ -942,6 +1101,8 @@ function resetAll() {
     resetPDFTemplate();
     resultsPanelSection.style.display = 'none';
     generatedPDFs = [];
+    selectedIndices.clear();
+    selectedMonths.clear();
 }
 
 
@@ -1023,6 +1184,7 @@ async function generateAllPDFTemplateCards() {
     console.log('Iniciando geração de cartões PDF com template...');
     console.log('Template carregado:', pdfTemplateDoc ? 'Sim' : 'Não');
     console.log('Dados Excel:', excelData.length, 'cartões');
+    console.log('Cartões selecionados:', selectedIndices.size);
 
     if (!pdfTemplateDoc) {
         showErrorAlert('Por favor, carregue um template PDF primeiro.');
@@ -1034,15 +1196,24 @@ async function generateAllPDFTemplateCards() {
         return;
     }
 
+    if (selectedIndices.size === 0) {
+        showErrorAlert('Por favor, selecione pelo menos um cartão para gerar.');
+        return;
+    }
+
     progressModal.style.display = 'flex';
     generatedPDFs = [];
 
-    for (let i = 0; i < excelData.length; i++) {
-        const data = excelData[i];
-        const progress = ((i + 1) / excelData.length) * 100;
+    // Get selected data
+    const selectedData = excelData.filter((_, index) => selectedIndices.has(index));
+    const totalSelected = selectedData.length;
+
+    for (let i = 0; i < selectedData.length; i++) {
+        const data = selectedData[i];
+        const progress = ((i + 1) / totalSelected) * 100;
 
         progressFill.style.width = `${progress}%`;
-        progressText.textContent = `${i + 1} de ${excelData.length} cartões gerados`;
+        progressText.textContent = `${i + 1} de ${totalSelected} cartões gerados`;
 
         try {
             const pdfBytes = await generatePDFTemplateCard(data);

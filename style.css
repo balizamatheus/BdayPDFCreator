@@ -594,24 +594,10 @@ body {
 
 /* Month Tabs */
 .month-tabs {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 6px;
     margin-bottom: 15px;
-    flex-wrap: wrap;
-}
-
-.month-tab {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 100px;
-    font-size: 12px;
 }
 
 .month-tab:hover {
@@ -628,6 +614,10 @@ body {
 .month-title {
     font-weight: 600;
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .month-count {
@@ -635,6 +625,7 @@ body {
     padding: 2px 8px;
     border-radius: 10px;
     font-size: 11px;
+    flex-shrink: 0;
 }
 
 /* Data Table */
@@ -667,6 +658,13 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
+.data-table th.checkbox-column,
+.data-table td.checkbox-column {
+    width: 40px;
+    text-align: center;
+    padding: 8px 6px;
+}
+
 .data-table th {
     font-weight: 600;
     text-transform: uppercase;
@@ -684,6 +682,121 @@ body {
 
 .data-table tbody tr:nth-child(even):hover {
     background: var(--bg-canvas);
+}
+
+/* Custom Checkboxes */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    flex-shrink: 0;
+}
+
+input[type="checkbox"]:hover {
+    border-color: var(--accent-color);
+}
+
+input[type="checkbox"]:checked {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.3);
+}
+
+/* Month Tab Checkbox */
+.month-tab-checkbox {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}
+
+.month-tab {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 120px;
+    font-size: 12px;
+    user-select: none;
+}
+
+.month-tab:hover {
+    background: var(--bg-canvas);
+    border-color: var(--accent-color);
+}
+
+.month-tab.active {
+    background: var(--accent-color);
+    color: var(--white);
+    border-color: var(--accent-color);
+}
+
+.month-tab.selected {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+}
+
+.month-tab.selected .month-tab-checkbox {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.month-tab.selected .month-tab-checkbox::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.month-tab.partial {
+    border-color: var(--warning-color);
+}
+
+.month-tab.partial .month-tab-checkbox {
+    background: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+.month-tab.partial .month-tab-checkbox::after {
+    content: '−';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: bold;
 }
 
 /* Results */
