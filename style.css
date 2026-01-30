@@ -1448,9 +1448,9 @@ input[type="checkbox"]:focus {
 }
 
 .status-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    border-radius: 40%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1461,6 +1461,12 @@ input[type="checkbox"]:focus {
 .success-icon {
     background: var(--success-color);
     color: var(--white);
+    transition: all 0.3s ease;
+}
+
+.success-icon:hover {
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.6);
 }
 
 .status-info {
@@ -1487,7 +1493,7 @@ input[type="checkbox"]:focus {
 .btn-remove {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: 20%;
     border: none;
     background: transparent;
     color: var(--text-primary);
@@ -1502,6 +1508,9 @@ input[type="checkbox"]:focus {
 .btn-remove:hover {
     background: rgba(244, 67, 54, 0.8);
     color: var(--white);
+    border-radius: 10%;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
 }
 
 /* Upload Card Footer */
