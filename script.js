@@ -17,6 +17,8 @@ let currentZoom = 100;
 // Selection tracking
 let selectedIndices = new Set();
 let selectedMonths = new Set();
+let modalSelectedIndices = new Set();
+let currentModalMonth = null;
 
 // Welcome Modal State
 let welcomeExcelFile = null;
@@ -77,7 +79,6 @@ const uploadBox = document.getElementById('uploadBox');
 const fileInfo = document.getElementById('fileInfo');
 const fileName = document.getElementById('fileName');
 const fileSize = document.getElementById('fileSize');
-const dataTableBody = document.getElementById('dataTableBody');
 const progressModal = document.getElementById('progressModal');
 const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
@@ -280,7 +281,7 @@ function handleWelcomeExcel(file) {
 
     // Read Excel file
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, {
@@ -381,7 +382,7 @@ function handleWelcomeTemplate(file) {
 
     // Read PDF file
     const reader = new FileReader();
-    reader.onload = async function(e) {
+    reader.onload = async function (e) {
         try {
             welcomeTemplateBytes = e.target.result;
             // Check if both files are loaded
@@ -462,7 +463,7 @@ function startApplication() {
         // Hide welcome modal with animation
         welcomeModal.style.opacity = '0';
         welcomeModal.style.transition = 'opacity 0.5s ease';
-        
+
         setTimeout(() => {
             welcomeModal.classList.add('hidden');
             welcomeModal.style.opacity = '1';
@@ -494,7 +495,7 @@ function handleFile(file) {
 
     // Read Excel file
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, {
@@ -661,7 +662,6 @@ function groupDataByMonth() {
 
 function displayDataByMonth() {
     monthTabs.innerHTML = '';
-    dataTableBody.innerHTML = '';
 
     const monthOrder = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -722,33 +722,8 @@ function showMonthContent(month) {
         tab.classList.add('active');
     }
 
-    // Update table with month data
-    dataTableBody.innerHTML = '';
-    if (dataByMonth[month]) {
-        dataByMonth[month].forEach((row, idx) => {
-            const tr = document.createElement('tr');
-            const isSelected = selectedIndices.has(row.originalIndex);
-            tr.innerHTML = `
-                <td class="checkbox-column">
-                    <input type="checkbox" class="record-checkbox" data-index="${row.originalIndex}"
-                        ${isSelected ? 'checked' : ''}
-                        onchange="toggleRecordSelection(${row.originalIndex})">
-                </td>
-                <td>${row.Nome || '-'}</td>
-                <td>${row.Vocativo || '-'}</td>
-                <td>${row.Data || '-'}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary" onclick="downloadSingleCard(${row.originalIndex})">
-                        📥
-                    </button>
-                </td>
-            `;
-            dataTableBody.appendChild(tr);
-        });
-    }
-
-    // Update select all checkbox state
-    updateSelectAllCheckbox();
+    // Open the month selection modal
+    openMonthModal(month);
 }
 
 // Selection Management Functions
@@ -767,68 +742,9 @@ function toggleMonthSelection(month) {
         }
     });
 
-    // Update all checkboxes in the table for this month
-    if (currentMonth === month) {
-        document.querySelectorAll('.record-checkbox').forEach(cb => {
-            cb.checked = shouldSelect;
-        });
-    }
-
     // Update month tab status
     updateMonthTabStatus(month);
-    
-    // Update selection counter
-    updateSelectionCounter();
-    
-    // Update select all checkbox
-    updateSelectAllCheckbox();
-}
 
-function toggleRecordSelection(index) {
-    if (selectedIndices.has(index)) {
-        selectedIndices.delete(index);
-    } else {
-        selectedIndices.add(index);
-    }
-
-    // Find which month this record belongs to
-    const month = Object.keys(dataByMonth).find(m =>
-        dataByMonth[m].some(row => row.originalIndex === index)
-    );
-
-    if (month) {
-        updateMonthTabStatus(month);
-    }
-
-    // Update selection counter
-    updateSelectionCounter();
-    
-    // Update select all checkbox
-    updateSelectAllCheckbox();
-}
-
-function toggleSelectAllCurrentMonth() {
-    if (!currentMonth || !dataByMonth[currentMonth]) return;
-
-    const checkbox = document.getElementById('selectAllCurrentMonth');
-    const shouldSelect = checkbox.checked;
-
-    dataByMonth[currentMonth].forEach(row => {
-        if (shouldSelect) {
-            selectedIndices.add(row.originalIndex);
-        } else {
-            selectedIndices.delete(row.originalIndex);
-        }
-    });
-
-    // Update all checkboxes in the table
-    document.querySelectorAll('.record-checkbox').forEach(cb => {
-        cb.checked = shouldSelect;
-    });
-
-    // Update month tab status
-    updateMonthTabStatus(currentMonth);
-    
     // Update selection counter
     updateSelectionCounter();
 }
@@ -840,9 +756,9 @@ function updateMonthTabStatus(month) {
     const totalCount = monthData.length;
     const selectedCount = monthData.filter(row => selectedIndices.has(row.originalIndex)).length;
     const tab = document.querySelector(`.month-tab[data-month="${month}"]`);
-    
+
     if (!tab) return; // Tab might not exist yet
-    
+
     const checkbox = tab.querySelector(`.month-tab-checkbox[data-month="${month}"]`);
     const countSpan = tab.querySelector('.month-count');
 
@@ -872,16 +788,282 @@ function updateSelectionCounter() {
     dataSummary.textContent = `${selected}/${total} cartões selecionados`;
 }
 
-function updateSelectAllCheckbox() {
-    if (!currentMonth || !dataByMonth[currentMonth]) return;
 
-    const checkbox = document.getElementById('selectAllCurrentMonth');
+// ========================================
+// Month Selection Modal Functions
+// ========================================
+
+function openMonthModal(month) {
+    currentModalMonth = month;
+    modalSelectedIndices = new Set();
+
+    // Copy currently selected indices for this month to modal selection
+    if (dataByMonth[month]) {
+        dataByMonth[month].forEach(row => {
+            if (selectedIndices.has(row.originalIndex)) {
+                modalSelectedIndices.add(row.originalIndex);
+            }
+        });
+    }
+
+    // Update modal title
+    const monthModalTitle = document.getElementById('monthModalTitle');
+    monthModalTitle.textContent = `Seleção de Cartões - ${month}`;
+
+    // Update modal summary
+    const monthModalSummary = document.getElementById('monthModalSummary');
+    const totalCount = dataByMonth[month] ? dataByMonth[month].length : 0;
+    const selectedCount = modalSelectedIndices.size;
+    monthModalSummary.innerHTML = `
+        <img src="https://img.icons8.com/fluency/48/calendar--v1.png" alt="calendar--v1" class="summary-icon"/>
+        <span>${selectedCount} de ${totalCount} cartões selecionados</span>
+    `;
+
+    // Populate modal table
+    const monthModalTableBody = document.getElementById('monthModalTableBody');
+    monthModalTableBody.innerHTML = '';
+
+    if (dataByMonth[month]) {
+        dataByMonth[month].forEach((row, idx) => {
+            const tr = document.createElement('tr');
+            const isSelected = modalSelectedIndices.has(row.originalIndex);
+            tr.innerHTML = `
+                <td class="checkbox-column">
+                    <input type="checkbox" class="modal-checkbox" data-index="${row.originalIndex}"
+                        ${isSelected ? 'checked' : ''}
+                        onchange="toggleModalSelection(${row.originalIndex})">
+                </td>
+                <td>${row.Nome || '-'}</td>
+                <td>${row.Vocativo || '-'}</td>
+                <td>${row.Data || '-'}</td>
+                <td>
+                    <button class="btn-image-action" onclick="downloadSingleCard(${row.originalIndex})" title="Baixar">
+                        <img src="https://img.icons8.com/fluency/48/download.png" alt="download"/>
+                    </button>
+                </td>
+            `;
+            monthModalTableBody.appendChild(tr);
+        });
+    }
+
+    // Update select all checkbox in modal
+    updateSelectAllModalCheckbox();
+
+    // Update navigation buttons state
+    updateModalNavigationButtons();
+
+    // Show modal
+    const monthModal = document.getElementById('monthModal');
+    monthModal.style.display = 'flex';
+}
+
+function updateModalNavigationButtons() {
+    const monthOrder = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+        'Outros'
+    ];
+
+    if (!currentModalMonth) return;
+
+    const currentIndex = monthOrder.indexOf(currentModalMonth);
+    if (currentIndex === -1) return;
+
+    // Find previous month with data
+    let prevIndex = currentIndex - 1;
+    let hasPrevious = false;
+    while (prevIndex >= 0) {
+        if (dataByMonth[monthOrder[prevIndex]] && dataByMonth[monthOrder[prevIndex]].length > 0) {
+            hasPrevious = true;
+            break;
+        }
+        prevIndex--;
+    }
+
+    // Find next month with data
+    let nextIndex = currentIndex + 1;
+    let hasNext = false;
+    while (nextIndex < monthOrder.length) {
+        if (dataByMonth[monthOrder[nextIndex]] && dataByMonth[monthOrder[nextIndex]].length > 0) {
+            hasNext = true;
+            break;
+        }
+        nextIndex++;
+    }
+
+    // Update navigation buttons
+    const navButtons = document.querySelectorAll('.month-modal-nav-btn');
+    if (navButtons.length >= 2) {
+        navButtons[0].disabled = !hasPrevious;
+        navButtons[1].disabled = !hasNext;
+    }
+}
+
+function closeMonthModal() {
+    const monthModal = document.getElementById('monthModal');
+    monthModal.style.display = 'none';
+    currentModalMonth = null;
+    modalSelectedIndices.clear();
+}
+
+
+
+function toggleModalSelection(index) {
+    if (modalSelectedIndices.has(index)) {
+        modalSelectedIndices.delete(index);
+    } else {
+        modalSelectedIndices.add(index);
+    }
+
+    // Update modal summary
+    updateModalSummary();
+
+    // Update select all checkbox in modal
+    updateSelectAllModalCheckbox();
+}
+
+function selectAllInModal() {
+    if (!currentModalMonth || !dataByMonth[currentModalMonth]) return;
+
+    dataByMonth[currentModalMonth].forEach(row => {
+        modalSelectedIndices.add(row.originalIndex);
+    });
+
+    // Update all checkboxes in the modal table
+    document.querySelectorAll('.modal-checkbox').forEach(cb => {
+        cb.checked = true;
+    });
+
+    // Update modal summary
+    updateModalSummary();
+
+    // Update select all checkbox in modal
+    updateSelectAllModalCheckbox();
+}
+
+function deselectAllInModal() {
+    modalSelectedIndices.clear();
+
+    // Update all checkboxes in the modal table
+    document.querySelectorAll('.modal-checkbox').forEach(cb => {
+        cb.checked = false;
+    });
+
+    // Update modal summary
+    updateModalSummary();
+
+    // Update select all checkbox in modal
+    updateSelectAllModalCheckbox();
+}
+
+function toggleSelectAllModal() {
+    const checkbox = document.getElementById('selectAllModal');
+    if (checkbox.checked) {
+        selectAllInModal();
+    } else {
+        deselectAllInModal();
+    }
+}
+
+function updateSelectAllModalCheckbox() {
+    if (!currentModalMonth || !dataByMonth[currentModalMonth]) return;
+
+    const checkbox = document.getElementById('selectAllModal');
     if (!checkbox) return;
 
-    const monthData = dataByMonth[currentMonth];
-    const selectedCount = monthData.filter(row => selectedIndices.has(row.originalIndex)).length;
-    
+    const monthData = dataByMonth[currentModalMonth];
+    const selectedCount = monthData.filter(row => modalSelectedIndices.has(row.originalIndex)).length;
+
     checkbox.checked = selectedCount === monthData.length;
+}
+
+function updateModalSummary() {
+    if (!currentModalMonth || !dataByMonth[currentModalMonth]) return;
+
+    const monthModalSummary = document.getElementById('monthModalSummary');
+    const totalCount = dataByMonth[currentModalMonth].length;
+    const selectedCount = modalSelectedIndices.size;
+    monthModalSummary.innerHTML = `
+        <img src="https://img.icons8.com/fluency/48/calendar--v1.png" alt="calendar--v1" class="summary-icon"/>
+        <span>${selectedCount} de ${totalCount} cartões selecionados</span>
+    `;
+}
+
+function saveModalSelections() {
+    // Apply modal selections to main selection
+    if (currentModalMonth && dataByMonth[currentModalMonth]) {
+        dataByMonth[currentModalMonth].forEach(row => {
+            if (modalSelectedIndices.has(row.originalIndex)) {
+                selectedIndices.add(row.originalIndex);
+            } else {
+                selectedIndices.delete(row.originalIndex);
+            }
+        });
+    }
+
+    // Update month tab status
+    updateMonthTabStatus(currentModalMonth);
+
+    // Update selection counter
+    updateSelectionCounter();
+
+    // Close modal
+    closeMonthModal();
+}
+
+function navigateMonth(direction) {
+    const monthOrder = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+        'Outros'
+    ];
+
+    if (!currentModalMonth) return;
+
+    const currentIndex = monthOrder.indexOf(currentModalMonth);
+    if (currentIndex === -1) return;
+
+    let newIndex = currentIndex + direction;
+
+    // Find the next available month with data
+    while (newIndex >= 0 && newIndex < monthOrder.length) {
+        const nextMonth = monthOrder[newIndex];
+        if (dataByMonth[nextMonth] && dataByMonth[nextMonth].length > 0) {
+            openMonthModal(nextMonth);
+            return;
+        }
+        newIndex += direction;
+    }
+}
+
+async function downloadSelectedFromModal() {
+    if (modalSelectedIndices.size === 0) {
+        showErrorAlert('Por favor, selecione pelo menos um cartão para baixar.');
+        return;
+    }
+
+    // Apply modal selections to main selection
+    if (currentModalMonth && dataByMonth[currentModalMonth]) {
+        dataByMonth[currentModalMonth].forEach(row => {
+            if (modalSelectedIndices.has(row.originalIndex)) {
+                selectedIndices.add(row.originalIndex);
+            } else {
+                selectedIndices.delete(row.originalIndex);
+            }
+        });
+    }
+
+    // Update month tab status
+    updateMonthTabStatus(currentModalMonth);
+
+    // Update selection counter
+    updateSelectionCounter();
+
+    // Close modal
+    closeMonthModal();
+
+    // Download selected cards
+    await downloadSelectedCards();
 }
 
 // PDF Template handling
@@ -907,7 +1089,7 @@ async function handlePDFTemplate(file) {
 
     // Read PDF file
     const reader = new FileReader();
-    reader.onload = async function(e) {
+    reader.onload = async function (e) {
         try {
             pdfTemplateBytes = e.target.result;
             pdfTemplateDoc = await PDFLib.PDFDocument.load(pdfTemplateBytes);
@@ -1110,6 +1292,96 @@ async function downloadAllCards() {
     }
 }
 
+async function downloadSelectedCards() {
+    if (!pdfTemplateDoc) {
+        showErrorAlert('Por favor, carregue um template PDF primeiro.');
+        return;
+    }
+
+    if (excelData.length === 0) {
+        showErrorAlert('Por favor, faça upload de um arquivo Excel primeiro.');
+        return;
+    }
+
+    if (selectedIndices.size === 0) {
+        showErrorAlert('Por favor, selecione pelo menos um cartão para baixar.');
+        return;
+    }
+
+    progressModal.style.display = 'flex';
+
+    // Track used filenames to handle duplicates
+    const usedFilenames = {};
+    const generatedPDFs = [];
+
+    // Get selected data
+    const selectedData = excelData.filter((_, index) => selectedIndices.has(index));
+    const totalSelected = selectedData.length;
+
+    for (let i = 0; i < selectedData.length; i++) {
+        const data = selectedData[i];
+        const progress = ((i + 1) / totalSelected) * 100;
+
+        progressFill.style.width = `${progress}%`;
+        progressText.textContent = `${i + 1} de ${totalSelected} cartões gerados`;
+
+        try {
+            const pdfBytes = await generatePDFTemplateCard(data);
+
+            if (pdfBytes) {
+                // Remove accents, replace spaces with underscores, and remove other special characters
+                let safeName = data.Nome || 'cartao';
+                safeName = removeAccents(safeName);
+                safeName = safeName.replace(/\s+/g, '_');
+                safeName = safeName.replace(/[^a-zA-Z0-9_]/g, '');
+
+                // Handle duplicate filenames by adding a counter
+                let filename = `${safeName}.pdf`;
+                let counter = 1;
+                while (usedFilenames[filename]) {
+                    filename = `${safeName}_${counter}.pdf`;
+                    counter++;
+                }
+                usedFilenames[filename] = true;
+
+                const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+                generatedPDFs.push({
+                    name: filename,
+                    blob: pdfBlob
+                });
+            }
+        } catch (error) {
+            console.error(`Erro ao gerar cartão para ${data.Nome}:`, error);
+        }
+    }
+
+    progressModal.style.display = 'none';
+
+    // Download as ZIP
+    try {
+        // Create a new ZIP file
+        const zip = new JSZip();
+
+        // Add all PDFs to the ZIP
+        generatedPDFs.forEach(pdf => {
+            zip.file(pdf.name, pdf.blob);
+        });
+
+        // Generate the ZIP file
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+        // Download the ZIP file
+        const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        download(zipBlob, `cartoes_${timestamp}.zip`);
+
+        showSuccessAlert(`✅ ${generatedPDFs.length} cartões baixados como arquivo ZIP!`);
+    } catch (error) {
+        console.error('Erro ao criar arquivo ZIP:', error);
+        showErrorAlert('Erro ao criar arquivo ZIP: ' + error.message);
+    }
+}
+
 function resetUpload() {
     fileInput.value = '';
     uploadBox.style.display = 'block';
@@ -1285,13 +1557,13 @@ const toolbarItems = document.querySelectorAll('.toolbar-item');
 toolbarItems.forEach(item => {
     item.addEventListener('click', () => {
         const tool = item.dataset.tool;
-        
+
         // Remove active class from all items
         toolbarItems.forEach(i => i.classList.remove('active'));
-        
+
         // Add active class to selected item
         item.classList.add('active');
-        
+
         console.log('Tool selected:', tool);
     });
 });
@@ -1303,7 +1575,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (defaultTool) {
         defaultTool.classList.add('active');
     }
-    
+
     // Initialize zoom level
     updateZoom();
 
@@ -1311,35 +1583,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (welcomeModal) {
         welcomeModal.classList.remove('hidden');
     }
-    
+
     // Set body dimensions for glitter effect
     document.body.style.setProperty("--dw", document.body.clientWidth + "px");
     document.body.style.setProperty("--dh", document.body.clientHeight + "px");
-    
+
     // Mouse tracking for glitter effect - unified listener on parent container
     const uploadContainer = document.querySelector(".upload-grid");
     const cards = document.getElementsByClassName("upload-card");
-    
+
     if (uploadContainer) {
         uploadContainer.onpointermove = e => {
-            for(const card of cards) {
+            for (const card of cards) {
                 const rect = card.getBoundingClientRect();
-                
+
                 // Calcula a posição do mouse em relação a CADA card,
                 // mesmo que o mouse não esteja sobre ele no momento.
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 // Define as variáveis de posição (necessárias para o gradiente)
                 card.style.setProperty("--mouse-x", `${x}px`);
                 card.style.setProperty("--mouse-y", `${y}px`);
-                
+
                 // Mantém a lógica de RATIO que você já utiliza
                 const RATIO = {
                     x: x / rect.width,
                     y: y / rect.height
                 };
-                
+
                 card.style.setProperty("--ratio-x", RATIO.x);
                 card.style.setProperty("--ratio-y", RATIO.y);
             }
@@ -1349,7 +1621,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Maths function for glitter effect
 function fromCenter({ x, y }) {
-    return Math.min(Math.max( 0, Math.sqrt( (y - .5) * (y - .5) + (x  - .5) * (x  - .5) ) / .5 ), 1 );
+    return Math.min(Math.max(0, Math.sqrt((y - .5) * (y - .5) + (x - .5) * (x - .5)) / .5), 1);
 }
 
 // Accordion functionality for Field Positioning

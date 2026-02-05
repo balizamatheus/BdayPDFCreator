@@ -178,7 +178,7 @@
                             <p class="file-name" id="fileName"></p>
                             <p class="file-size" id="fileSize"></p>
                         </div>
-                        <button class="btn-icon" onclick="resetUpload()">✕</button>
+                        <button class="btn-remove" style="width: auto; height: auto; font-size: 15px; padding: 3px 7px;" onclick="resetUpload()">✕</button>
                     </div>
                 </div>
 
@@ -199,7 +199,7 @@
                             <p class="file-name" id="pdfTemplateName"></p>
                             <p class="file-size" id="pdfTemplateSize"></p>
                         </div>
-                        <button class="btn-icon" onclick="resetPDFTemplate()">✕</button>
+                        <button class="btn-remove" style="width: auto; height: auto; font-size: 15px; padding: 3px 7px;" onclick="resetPDFTemplate()">✕</button>
                     </div>
                 </div>
 
@@ -304,28 +304,11 @@
                 <div class="panel-section" id="dataPreviewSection" style="display: none;">
                     <h3 class="panel-title">Prévia dos Dados</h3>
                     <div class="data-summary" id="dataSummary"></div>
-                    
+
                     <!-- Month Tabs -->
                     <div class="month-tabs" id="monthTabs"></div>
-                    
+
                     <!-- Data Table -->
-                    <div class="data-table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th class="checkbox-column">
-                                        <input type="checkbox" id="selectAllCurrentMonth" onchange="toggleSelectAllCurrentMonth()">
-                                    </th>
-                                    <th>Nome</th>
-                                    <th>Vocativo</th>
-                                    <th>Data</th>
-                                    <th>Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dataTableBody">
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
 
                 <!-- Results Section -->
@@ -353,6 +336,58 @@
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
                 <p class="progress-text" id="progressText">0 de 0 cartões gerados</p>
+            </div>
+        </div>
+
+        <!-- Month Selection Modal -->
+        <div class="month-modal" id="monthModal" style="display: none;">
+            <div class="month-modal-content">
+                <div class="month-modal-header">
+                    <button class="month-modal-nav-btn" onclick="navigateMonth(-1)" title="Mês Anterior">
+                        <img src="https://img.icons8.com/fluency/48/back.png" alt="back" class="nav-icon" />
+                    </button>
+                    <h3 id="monthModalTitle">Seleção de Cartões</h3>
+                    <button class="month-modal-nav-btn" onclick="navigateMonth(1)" title="Próximo Mês">
+                        <img src="https://img.icons8.com/fluency/48/back.png" alt="back" class="nav-icon rotate-180" />
+                    </button>
+                    <button class="btn-remove" onclick="closeMonthModal()">✕</button>
+                </div>
+                <div class="month-modal-body">
+                    <div class="month-modal-summary" id="monthModalSummary"></div>
+                    <div class="month-modal-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="selectAllInModal()">Selecionar Todos</button>
+                        <button class="btn btn-sm btn-secondary" onclick="deselectAllInModal()">Desmarcar Todos</button>
+                    </div>
+                    <div class="month-modal-table-container">
+                        <table class="month-modal-table">
+                            <thead>
+                                <tr>
+                                    <th class="checkbox-column">
+                                        <input type="checkbox" id="selectAllModal" onchange="toggleSelectAllModal()">
+                                    </th>
+                                    <th>Nome</th>
+                                    <th>Vocativo</th>
+                                    <th>Data</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthModalTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="month-modal-footer">
+                    <button class="btn btn-success" onclick="saveModalSelections()">
+                        <img src="https://img.icons8.com/fluency/48/checkmark--v1.png" alt="checkmark--v1"
+                            class="btn-icon-img" />
+                        <span>OK</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="downloadSelectedFromModal()">
+                        <img src="https://img.icons8.com/fluency/48/downloading-updates.png" alt="downloading-updates"
+                            class="btn-icon-img" />
+                        <span>Baixar Selecionados</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
