@@ -1819,6 +1819,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Glitter effect para upload-boxes
+const uploadBoxes = document.querySelectorAll('.upload-box');
+
+uploadBoxes.forEach(box => {
+    box.onpointermove = e => {
+        const rect = box.getBoundingClientRect();
+
+        // Calcula posição do mouse relativa ao box
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Define variáveis CSS
+        box.style.setProperty("--box-mouse-x", `${x}px`);
+        box.style.setProperty("--box-mouse-y", `${y}px`);
+
+        // Calcula ratios (0-1)
+        const RATIO = {
+            x: x / rect.width,
+            y: y / rect.height
+        };
+
+        box.style.setProperty("--box-ratio-x", RATIO.x);
+        box.style.setProperty("--box-ratio-y", RATIO.y);
+    };
+});
+
+// Glitter effect para file-infos
+const fileInfos = document.querySelectorAll('.file-info');
+
+fileInfos.forEach(info => {
+    info.onpointermove = e => {
+        const rect = info.getBoundingClientRect();
+
+        // Calcula posição do mouse relativa ao file-info
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Define variáveis CSS
+        info.style.setProperty("--file-mouse-x", `${x}px`);
+        info.style.setProperty("--file-mouse-y", `${y}px`);
+
+        // Calcula ratios (0-1)
+        const RATIO = {
+            x: x / rect.width,
+            y: y / rect.height
+        };
+
+        info.style.setProperty("--file-ratio-x", RATIO.x);
+        info.style.setProperty("--file-ratio-y", RATIO.y);
+    };
+});
+
 // Maths function for glitter effect
 function fromCenter({ x, y }) {
     return Math.min(Math.max(0, Math.sqrt((y - .5) * (y - .5) + (x - .5) * (x - .5)) / .5), 1);

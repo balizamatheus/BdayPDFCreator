@@ -29,9 +29,21 @@
     --glitter2: url("https://assets.codepen.io/13471/noise-top.png");
     --ratio-x: .5;
     --ratio-y: .75;
+    --light-size-small: 50px;
+    --light-size-medium: 100px;
     --light-size: 200px;
     --mouse-x: 0px;
     --mouse-y: 0px;
+    /* Variáveis específicas para upload-box glitter */
+    --box-mouse-x: 0px;
+    --box-mouse-y: 0px;
+    --box-ratio-x: .5;
+    --box-ratio-y: .75;
+    /* Variáveis específicas para file-info glitter */
+    --file-mouse-x: 0px;
+    --file-mouse-y: 0px;
+    --file-ratio-x: .5;
+    --file-ratio-y: .75;
 }
 
 * {
@@ -376,11 +388,93 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     user-select: none;
+    /* Adicione estas propriedades para o glitter effect */
+    position: relative;
+    overflow: hidden;
+    image-rendering: pixelate;
 }
 
 .upload-box:hover {
     border-color: var(--accent-color);
     background: var(--bg-canvas);
+}
+
+/* Pseudo-elemento ::after - Camada de Glitter para upload-box */
+.upload-box:after {
+    --bgoffsetx: calc(3px * var(--box-ratio-x));
+    --bgoffsety: calc(3px * var(--box-ratio-y));
+    --pointerx: calc(100% * var(--box-ratio-x));
+    --pointery: calc(100% * var(--box-ratio-y));
+
+    background-color: var(--bg-tertiary);
+    background-image:
+        radial-gradient(var(--light-size) circle at var(--pointerx) var(--pointery),
+                        rgba(0, 0, 0, 0.75), black),
+        radial-gradient(var(--light-size) circle at var(--pointerx) var(--pointery),
+                        #252525cc, rgb(16, 16, 16) calc(var(--light-size) * 1)),
+        var(--glitter2),
+        var(--glitter2);
+    background-position: center, center, center,
+                         calc(var(--bgoffsetx)*1) calc(var(--bgoffsety)*1);
+    background-size: 560px 300px;
+    background-blend-mode: normal, color-burn, color-dodge;
+    filter: brightness(1.4) contrast(.725);
+
+    opacity: 0;
+    z-index: 2;
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 6px;
+    height: calc(100% - 4px);
+    width: calc(100% - 4px);
+    transition: opacity 500ms ease;
+    image-rendering: pixelate;
+    pointer-events: none; /* Importante para não bloquear cliques */
+}
+
+/* Pseudo-elemento ::before - Camada de Luz Colorida para upload-box */
+.upload-box:before {
+    content: "";
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: inherit;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-image:
+        conic-gradient(from 0deg at calc(0% + var(--box-mouse-x)) calc(0% + var(--box-mouse-y)),
+            #FFBD8C 0%, #FD8585 11%, #FD8585 15%, #F882FF 27%,
+            #F882FF 31%, #8785FE 42%, #8785FE 46%, #9AFCFF 55%,
+            #9AFCFF 59%, #99FD9C 70%, #99FD9C 74%, #FFFD84 87%,
+            #FFFD84 91%, #FFBD8C 100%),
+        radial-gradient(calc(var(--light-size-medium)*1.5) circle at var(--box-mouse-x) var(--box-mouse-y),
+            rgba(255, 255, 255, .7), rgba(0, 0, 0, .5) 50%),
+        radial-gradient(calc(var(--light-size-medium)*1.5) circle at var(--box-mouse-x) var(--box-mouse-y),
+            transparent, rgb(33, 22, 44) 60%, var(--background) 120%);
+    background-blend-mode: hue, color-dodge;
+    transition: opacity 500ms ease;
+    pointer-events: none; /* Importante para não bloquear cliques */
+    z-index: 1;
+}
+
+/* Hover states para upload-box glitter */
+.upload-box:hover:before {
+    opacity: 1;
+    transition-delay: 0.1s;
+}
+
+.upload-box:hover:after {
+    opacity: .850;
+    transition-delay: 0s;
+}
+
+/* Ajuste para manter o conteúdo clicável */
+.upload-box > * {
+    position: relative;
+    z-index: 3;
 }
 
 .upload-box.dragover {
@@ -413,6 +507,88 @@ body {
     background: var(--bg-tertiary);
     border-radius: 6px;
     border: 1px solid var(--border-color);
+    /* Adicione estas propriedades para o glitter effect */
+    position: relative;
+    overflow: hidden;
+    image-rendering: pixelate;
+}
+
+/* Pseudo-elemento ::after - Camada de Glitter para file-info */
+.file-info:after {
+    --bgoffsetx: calc(3px * var(--file-ratio-x));
+    --bgoffsety: calc(3px * var(--file-ratio-y));
+    --pointerx: calc(100% * var(--file-ratio-x));
+    --pointery: calc(100% * var(--file-ratio-y));
+
+    background-color: var(--bg-tertiary);
+    background-image:
+        radial-gradient(var(--light-size) circle at var(--pointerx) var(--pointery),
+                        rgba(0, 0, 0, 0.75), black),
+        radial-gradient(var(--light-size) circle at var(--pointerx) var(--pointery),
+                        #252525cc, rgb(16, 16, 16) calc(var(--light-size) * 1)),
+        var(--glitter2),
+        var(--glitter2);
+    background-position: center, center, center,
+                         calc(var(--bgoffsetx)*1) calc(var(--bgoffsety)*1);
+    background-size: 560px 300px;
+    background-blend-mode: normal, color-burn, color-dodge;
+    filter: brightness(1.4) contrast(.725);
+
+    opacity: 0;
+    z-index: 2;
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 6px;
+    height: calc(100% - 2px);
+    width: calc(100% - 2px);
+    transition: opacity 500ms ease;
+    image-rendering: pixelate;
+    pointer-events: none; /* Importante para não bloquear cliques */
+}
+
+/* Pseudo-elemento ::before - Camada de Luz Colorida para file-info */
+.file-info:before {
+    content: "";
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: inherit;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-image:
+        conic-gradient(from 0deg at calc(0% + var(--file-mouse-x)) calc(0% + var(--file-mouse-y)),
+            #FFBD8C 0%, #FD8585 11%, #FD8585 15%, #F882FF 27%,
+            #F882FF 31%, #8785FE 42%, #8785FE 46%, #9AFCFF 55%,
+            #9AFCFF 59%, #99FD9C 70%, #99FD9C 74%, #FFFD84 87%,
+            #FFFD84 91%, #FFBD8C 100%),
+        radial-gradient(calc(var(--light-size-small)*1.5) circle at var(--file-mouse-x) var(--file-mouse-y),
+            rgba(255, 255, 255, .7), rgba(0, 0, 0, .5) 50%),
+        radial-gradient(calc(var(--light-size-small)*1.5) circle at var(--file-mouse-x) var(--file-mouse-y),
+            transparent, rgb(33, 22, 44) 60%, var(--background) 120%);
+    background-blend-mode: hue, color-dodge;
+    transition: opacity 500ms ease;
+    pointer-events: none; /* Importante para não bloquear cliques */
+    z-index: 1;
+}
+
+/* Hover states para file-info glitter */
+.file-info:hover:before {
+    opacity: 1;
+    transition-delay: 0.1s;
+}
+
+.file-info:hover:after {
+    opacity: .850;
+    transition-delay: 0s;
+}
+
+/* Ajuste para manter o conteúdo clicável */
+.file-info > * {
+    position: relative;
+    z-index: 3;
 }
 
 .file-icon {
