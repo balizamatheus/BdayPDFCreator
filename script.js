@@ -883,13 +883,7 @@ function displayDataByMonth() {
         }
     });
 
-    // Show first month by default
-    if (monthOrder.some(month => dataByMonth[month] && dataByMonth[month].length > 0)) {
-        const firstMonth = monthOrder.find(month => dataByMonth[month] && dataByMonth[month].length > 0);
-        if (firstMonth) {
-            showMonthContent(firstMonth);
-        }
-    }
+    // Don't show first month by default - user will click on month tabs to open modal
 }
 
 function showMonthContent(month) {
