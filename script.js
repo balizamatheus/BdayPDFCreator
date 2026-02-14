@@ -25,6 +25,10 @@ let welcomeExcelFile = null;
 let welcomeTemplateFile = null;
 let welcomeExcelData = null;
 let welcomeTemplateBytes = null;
+let useDefaultTemplate = false;
+
+// Workbench Default Template State
+let useDefaultTemplateMain = false;
 
 // Custom Alert System
 function showAlert(message, type = 'error', title = null) {
@@ -366,6 +370,13 @@ function handleWelcomeExcel(file) {
 }
 
 function handleWelcomeTemplate(file) {
+    // Check if default template is selected
+    const useDefaultCheckbox = document.getElementById('useDefaultTemplate');
+    if (useDefaultCheckbox.checked) {
+        showErrorAlert('Desmarque a opção "Usar template padrão" para fazer upload de um arquivo.');
+        return;
+    }
+
     // Validate file type
     if (file.type !== 'application/pdf') {
         showErrorAlert('Por favor, selecione um arquivo PDF válido.');
@@ -406,12 +417,180 @@ function resetWelcomeExcel() {
 }
 
 function resetWelcomeTemplate() {
+    const useDefaultCheckbox = document.getElementById('useDefaultTemplate');
+    useDefaultCheckbox.checked = false;
+    useDefaultTemplate = false;
+    
+    // Remove active class from header
+    const welcomeTemplateCard = document.getElementById('welcomeTemplateCard');
+    const welcomeTemplateCardHeader = welcomeTemplateCard.querySelector('.upload-card-header');
+    if (welcomeTemplateCardHeader) {
+        welcomeTemplateCardHeader.classList.remove('active');
+    }
+    
     welcomeTemplateInput.value = '';
     welcomeTemplateDropzone.style.display = 'flex';
     welcomeTemplateStatus.style.display = 'none';
     welcomeTemplateFile = null;
     welcomeTemplateBytes = null;
     checkWelcomeFilesLoaded();
+}
+
+// Toggle default template option
+function toggleDefaultTemplate() {
+    const useDefaultCheckbox = document.getElementById('useDefaultTemplate');
+    const welcomeTemplateCard = document.getElementById('welcomeTemplateCard');
+    const welcomeTemplateCardHeader = welcomeTemplateCard.querySelector('.upload-card-header');
+    
+    if (useDefaultCheckbox.checked) {
+        useDefaultTemplate = true;
+        welcomeTemplateCardHeader.classList.add('active');
+        
+        // Hide upload dropzone and show status
+        welcomeTemplateDropzone.style.display = 'none';
+        welcomeTemplateStatus.style.display = 'flex';
+        welcomeTemplateFilename.textContent = 'Template.pdf (padrão)';
+        welcomeTemplateSize.textContent = 'Carregando...';
+        
+        // Load default template
+        loadDefaultTemplate();
+    } else {
+        useDefaultTemplate = false;
+        welcomeTemplateCardHeader.classList.remove('active');
+        
+        // Show upload dropzone and hide status
+        welcomeTemplateDropzone.style.display = 'flex';
+        welcomeTemplateStatus.style.display = 'none';
+        welcomeTemplateFile = null;
+        welcomeTemplateBytes = null;
+        checkWelcomeFilesLoaded();
+    }
+}
+
+// Load default template from src folder
+async function loadDefaultTemplate() {
+    try {
+        const response = await fetch('src/Template.pdf');
+        if (!response.ok) {
+            throw new Error('Não foi possível carregar o template padrão');
+        }
+        
+        const arrayBuffer = await response.arrayBuffer();
+        welcomeTemplateBytes = arrayBuffer;
+        
+        // Update status with file size
+        welcomeTemplateSize.textContent = formatFileSize(arrayBuffer.byteLength);
+        
+        // Check if both files are loaded
+        checkWelcomeFilesLoaded();
+        
+        showSuccessAlert('Template padrão carregado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao carregar template padrão:', error);
+        showErrorAlert('Erro ao carregar o template padrão. Verifique se o arquivo src/Template.pdf existe.');
+        
+        // Reset checkbox and show upload dropzone
+        const useDefaultCheckbox = document.getElementById('useDefaultTemplate');
+        useDefaultCheckbox.checked = false;
+        useDefaultTemplate = false;
+        
+        const welcomeTemplateCard = document.getElementById('welcomeTemplateCard');
+        const welcomeTemplateCardHeader = welcomeTemplateCard.querySelector('.upload-card-header');
+        if (welcomeTemplateCardHeader) {
+            welcomeTemplateCardHeader.classList.remove('active');
+        }
+        
+        welcomeTemplateDropzone.style.display = 'flex';
+        welcomeTemplateStatus.style.display = 'none';
+        welcomeTemplateBytes = null;
+        checkWelcomeFilesLoaded();
+    }
+}
+
+// Toggle default template option in workbench
+function toggleDefaultTemplateMain() {
+    const useDefaultCheckbox = document.getElementById('useDefaultTemplateMain');
+    const checkboxHeader = useDefaultCheckbox.closest('.checkbox-header');
+    
+    if (useDefaultCheckbox.checked) {
+        useDefaultTemplateMain = true;
+        checkboxHeader.classList.add('active');
+        
+        // Hide upload box and show file info
+        pdfTemplateBox.style.display = 'none';
+        pdfTemplateInfo.style.display = 'flex';
+        pdfTemplateName.textContent = 'Template.pdf (padrão)';
+        pdfTemplateSize.textContent = 'Carregando...';
+        
+        // Load default template
+        loadDefaultTemplateMain();
+    } else {
+        useDefaultTemplateMain = false;
+        checkboxHeader.classList.remove('active');
+        
+        // Show upload box and hide file info
+        pdfTemplateBox.style.display = 'block';
+        pdfTemplateInfo.style.display = 'none';
+        pdfTemplateBytes = null;
+        pdfTemplateDoc = null;
+        fieldPositioning.style.display = 'none';
+        
+        // Hide PDF frame, show placeholder
+        pdfPreviewFrame.style.display = 'none';
+        canvasPlaceholder.style.display = 'block';
+    }
+}
+
+// Load default template from src folder for workbench
+async function loadDefaultTemplateMain() {
+    try {
+        const response = await fetch('src/Template.pdf');
+        if (!response.ok) {
+            throw new Error('Não foi possível carregar o template padrão');
+        }
+        
+        const arrayBuffer = await response.arrayBuffer();
+        pdfTemplateBytes = arrayBuffer;
+        pdfTemplateDoc = await PDFLib.PDFDocument.load(pdfTemplateBytes);
+        
+        // Update file info with file size
+        pdfTemplateSize.textContent = formatFileSize(arrayBuffer.byteLength);
+        
+        // Show field positioning
+        fieldPositioning.style.display = 'block';
+        updateFieldList();
+        initializeFieldInputs();
+        updatePDFPreview();
+        
+        // Show PDF frame, hide placeholder
+        pdfPreviewFrame.style.display = 'block';
+        canvasPlaceholder.style.display = 'none';
+        
+        showSuccessAlert('Template padrão carregado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao carregar template padrão:', error);
+        showErrorAlert('Erro ao carregar o template padrão. Verifique se o arquivo src/Template.pdf existe.');
+        
+        // Reset checkbox and show upload box
+        const useDefaultCheckbox = document.getElementById('useDefaultTemplateMain');
+        useDefaultCheckbox.checked = false;
+        useDefaultTemplateMain = false;
+        
+        const checkboxHeader = useDefaultCheckbox.closest('.checkbox-header');
+        if (checkboxHeader) {
+            checkboxHeader.classList.remove('active');
+        }
+        
+        pdfTemplateBox.style.display = 'block';
+        pdfTemplateInfo.style.display = 'none';
+        pdfTemplateBytes = null;
+        pdfTemplateDoc = null;
+        fieldPositioning.style.display = 'none';
+        
+        // Hide PDF frame, show placeholder
+        pdfPreviewFrame.style.display = 'none';
+        canvasPlaceholder.style.display = 'block';
+    }
 }
 
 function checkWelcomeFilesLoaded() {
@@ -442,7 +621,12 @@ function startApplication() {
         }
 
         // Update PDF template box
-        if (welcomeTemplateFile) {
+        if (useDefaultTemplate) {
+            pdfTemplateBox.style.display = 'none';
+            pdfTemplateInfo.style.display = 'flex';
+            pdfTemplateName.textContent = 'Template.pdf (padrão)';
+            pdfTemplateSize.textContent = formatFileSize(pdfTemplateBytes.byteLength);
+        } else if (welcomeTemplateFile) {
             pdfTemplateBox.style.display = 'none';
             pdfTemplateInfo.style.display = 'flex';
             pdfTemplateName.textContent = welcomeTemplateFile.name;
@@ -1081,6 +1265,17 @@ async function handlePDFTemplate(file) {
         return;
     }
 
+    // Reset default template checkbox
+    const useDefaultCheckbox = document.getElementById('useDefaultTemplateMain');
+    if (useDefaultCheckbox) {
+        useDefaultCheckbox.checked = false;
+        useDefaultTemplateMain = false;
+        const checkboxHeader = useDefaultCheckbox.closest('.checkbox-header');
+        if (checkboxHeader) {
+            checkboxHeader.classList.remove('active');
+        }
+    }
+
     // Display file info
     pdfTemplateBox.style.display = 'none';
     pdfTemplateInfo.style.display = 'flex';
@@ -1121,6 +1316,17 @@ function resetPDFTemplate() {
     fieldPositioning.style.display = 'none';
     pdfTemplateBytes = null;
     pdfTemplateDoc = null;
+
+    // Reset default template checkbox
+    const useDefaultCheckbox = document.getElementById('useDefaultTemplateMain');
+    if (useDefaultCheckbox) {
+        useDefaultCheckbox.checked = false;
+        useDefaultTemplateMain = false;
+        const checkboxHeader = useDefaultCheckbox.closest('.checkbox-header');
+        if (checkboxHeader) {
+            checkboxHeader.classList.remove('active');
+        }
+    }
 
     // Hide PDF frame, show placeholder
     pdfPreviewFrame.style.display = 'none';

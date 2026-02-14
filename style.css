@@ -292,6 +292,17 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
+.panel-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.panel-section-header .panel-title {
+    margin-bottom: 0;
+}
+
 .accordion-section .panel-title {
     cursor: pointer;
     user-select: none;
@@ -299,27 +310,37 @@ body {
 }
 
 .accordion-section.active .panel-title {
-    padding: 0 0 15px 0;
     margin-bottom: 0;
 }
 
 .accordion-icon {
     transition: transform 0.3s ease;
     margin-left: auto;
-    font-size: 12px;
+}
+
+.accordion-icon.btn-image-action img {
+    width: 17px;
+    height: 17px;
 }
 
 .accordion-section.active .accordion-icon {
     transform: rotate(180deg);
 }
 
+.accordion-section.active .accordion-icon:hover {
+    transform: rotate(180deg) scale(1.15);
+}
+
 .panel-content {
-    display: none;
+    max-height: 0;
     overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
 }
 
 .accordion-section.active .panel-content {
-    display: block;
+    max-height: 2000px;
+    opacity: 1;
 }
 
 .panel-title {
@@ -359,6 +380,11 @@ body {
     margin-bottom: 10px;
 }
 
+.upload-icon img {
+    width: 36px;
+    height: 36px;
+}
+
 .upload-box p {
     color: var(--text-secondary);
     font-size: 13px;
@@ -378,6 +404,11 @@ body {
 
 .file-icon {
     font-size: 24px;
+}
+
+.file-icon img {
+    width: 24px;
+    height: 24px;
 }
 
 .file-details {
@@ -604,6 +635,9 @@ input[type="checkbox"] {
     margin-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
+}
+.field-group.nome h4 {
+    padding-top: 15px;
 }
 
 .coord-input {
@@ -1639,10 +1673,48 @@ input[type="checkbox"]:focus {
 .upload-card-body {
     padding: 18px 16px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
     z-index: 3;
+}
+
+/* Checkbox Label */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-primary);
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.checkbox-label:hover {
+    color: var(--accent-color);
+}
+
+/* Checkbox in Header */
+.checkbox-header {
+    margin-left: auto;
+    font-size: 12px;
+}
+
+.upload-card-header.active .checkbox-header {
+    color: var(--success-color);
+}
+
+/* Checkbox in Workbench Panel */
+.checkbox-header.active {
+    color: var(--success-color);
 }
 
 /* Upload Dropzone */
@@ -1676,6 +1748,11 @@ input[type="checkbox"]:focus {
 .dropzone-icon {
     color: var(--text-muted);
     transition: all 0.3s ease;
+}
+
+.dropzone-icon img {
+    width: 48px;
+    height: 48px;
 }
 
 .upload-dropzone:hover .dropzone-icon {
@@ -1773,7 +1850,9 @@ input[type="checkbox"]:focus {
 .btn-remove {
     width: 32px;
     height: 32px;
-    border-radius: 20%;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 6px;
     border: none;
     background: transparent;
     color: var(--text-primary);
@@ -1783,14 +1862,27 @@ input[type="checkbox"]:focus {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.btn-remove svg {
+    transition: filter 0.3s ease;
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+}
+
+.btn-remove:hover svg {
+    filter: drop-shadow(0 0 2px rgba(244, 67, 54, 0.8));
 }
 
 .btn-remove:hover {
-    background: rgba(244, 67, 54, 0.8);
-    color: var(--white);
-    border-radius: 10%;
-    transform: rotate(90deg) scale(1.1);
-    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
+    background: rgba(244, 67, 54, 0.1);
+    transform: scale(1.15);
+    border: 1px solid rgb(244, 67, 54);
 }
 
 /* Upload Card Footer */

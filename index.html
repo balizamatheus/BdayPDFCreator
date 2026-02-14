@@ -32,11 +32,7 @@
                     <div class="upload-card-body">
                         <div class="upload-dropzone" id="welcomeExcelDropzone">
                             <div class="dropzone-icon">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="17 8 12 3 7 8"/>
-                                    <line x1="12" y1="3" x2="12" y2="15"/>
-                                </svg>
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZUlEQVR4nO3aS2jTcBwH8Hrx4kmci/jWsYsXXyAePMiGB3G7uYMoguKyudfFQX2B6BA3D+6wiQdFDyrIZCKCqIdmHZ2be7MpPta6Ura1S5r/v83W9d38JNENdenov02ytPQH38ufJvTTJP/88m9MpnzlQPn9/iKMcQ1CyKxFWJZt1BWEMS5HCAURQqBVZmZmwOVyDekCAoA1CCG3lqBFlN1u1weGENqmNehvlC4wjuOK9Ub9gQ3nHMquJYxbRZRmMC4JKhaLgSiKRAmHw8QoTWBcElQoFIJIJEKUQCCQFOV2u5OipDidzuGsO/04jlsRpSqM0wklxePxgMPh0B7G6YhaDMuyMDs7mzQej6dcE5R0fSwsLBBlbm5OFTTG+IQmKGk2I61oNGpsFPq9c6KodXpiLVFq5Z1rEOrHHsHZkbaUsr/HbCtk6A6KoZ9TDN2wp6NiraFQnc4e2MRUAcXQaafQUvnSUKhTQ60ZgSgpFlrcbru43jBt0vH+28u+5NH+m1Ax2gqH+q4ujW3uqoaTo/fk8S1d1cu2KbBWFWeMCgaD8pckyfz8fEqosuEWiIsJmArxsLu7Xh5rcnTKM+gzt03xaKmCUitKKCntrvcy4uGUBY58ugHhRBQmgywUdTdkL2qbtQa+BqYhIYoyJpqIwbFB5c9S2YKSUjrQJKOkap58veJkUaAGShAE+Rohid/vJ0I1fn+61I0w6MuKU3+BGii12qRkqMN91yEQDwMbEaDf75C3vzbxQluUz+eTjxZJlFolJZQ0ZQ8JP0EEEU6PtcG+j2bwRQMQScSgZOBWdl5TdyffyEfm8XTX0tj5zw/ksR8BN+yw1mYf6kDvZfnGu9Va88/4wd4r8rjhUedG7qvQJlXGqA9n1mWMkhZSpFaJJFIX8v9+bNPjsNNalxGqkKHvpAzSAyVl3OOA9om30PLtVUopG2h+QjG0eaOlspGyXCghAulx+uXsQyLKo5B2qHRuvqRRaquQ0VaT0inpx9MNJaTR0JIm2Tohzl9TCpVHoSxHhdL4f4o00mKN0uMK1gqVzhIZaeLxuL6zH8rF0w/lUchYKKTTGy8k8Xq9pVnxblKq4Xk+LAjCBlOmhTEu0/otshRBcZ7n60xqlc/n2+X1emt5nm9ejSCELmGM96oGypfJWPUL5sWswEbVVLEAAAAASUVORK5CYII=" alt="Excel Icon">
                             </div>
                             <p class="dropzone-text">Arraste seu arquivo Excel aqui</p>
                             <p class="dropzone-subtext">ou clique para selecionar</p>
@@ -51,7 +47,11 @@
                                 <p class="status-filename" id="welcomeExcelFilename"></p>
                                 <p class="status-size" id="welcomeExcelSize"></p>
                             </div>
-                            <button class="btn-remove" onclick="resetWelcomeExcel()">✕</button>
+                            <button class="btn-remove" onclick="resetWelcomeExcel()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+                                    <linearGradient id="btnRemoveExcelGr1" x1="7.534" x2="27.557" y1="7.534" y2="27.557" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f44f5a"></stop><stop offset=".443" stop-color="#ee3d4a"></stop><stop offset="1" stop-color="#e52030"></stop></linearGradient><path fill="url(#btnRemoveExcelGr1)" d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"></path><linearGradient id="btnRemoveExcelGr2" x1="27.373" x2="40.507" y1="27.373" y2="40.507" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a8142e"></stop><stop offset=".179" stop-color="#ba1632"></stop><stop offset=".243" stop-color="#c21734"></stop></linearGradient><path fill="url(#btnRemoveExcelGr2)" d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                     <div class="upload-card-footer">
@@ -63,15 +63,16 @@
                 <div class="upload-card" id="welcomeTemplateCard">
                     <div class="upload-card-header">
                         <h2 class="upload-card-title">Template</h2>
+                        <!-- Use Default Template Checkbox -->
+                        <label class="checkbox-label checkbox-header">
+                            <input type="checkbox" id="useDefaultTemplate" onchange="toggleDefaultTemplate()">
+                            <span>Usar padrão</span>
+                        </label>
                     </div>
                     <div class="upload-card-body">
                         <div class="upload-dropzone" id="welcomeTemplateDropzone">
                             <div class="dropzone-icon">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="17 8 12 3 7 8"/>
-                                    <line x1="12" y1="3" x2="12" y2="15"/>
-                                </svg>
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC4klEQVR4nO3aMU/bQBQH8Kjd+ymKurR7h46ou20FlAxAQV0oDAFBBwYGGCoRmJAygIQAUSEGJKZWdGBgQFRIfAAjAUIojnnnQCCOfXf2q+yoCRWtmgSfDcFP+i+nk3I/3z3HwyUScbVp6brecXFx8YkQ8llENE3LhAoCAAUALEIIisr5+TmenJzshQJCxOcAACJBv1GqqoYD03W9QzToNioUmGEYb8JGeTk9Pd1vO5RQmBEhShUFixqlqioeHx//bBmAk5PPqCR9tWWZUVnGIGKn01ja2roXSr3Py4NK0tugMH/Aenv/i9J1HY+OjoKHMUV5X1uMoiBfXa1mYQHZ0JA/zsbHq2PLy8hnZ5GmUtX5qVR9vpeZmTqsu7uhI5jP54OHsduoZBKRUuS5HPKVFXQJQTY8jHxpCd2DAx/qfP+Obj6PdGAAaV8fYqlUnZ/LIZuaahrlBQCwUCigpmn/DAB0to4ql2sLc7a3kc/P+yhnY6M2ztfX0dnc9FGurv/9CDaBahDe2TrKtpFns/6TdwGQjYzcRWWz6OzsVHeKc3Q1zQ+fm3ugKEr9XeBra8jGxqqI2yhFQWd3F/ni4iPaqXL9+NV2xuupszN09vf9fvJQtKvrkaAUBdno6N0F9vf7u+YdRdrTUx9PJpFlMg8PZSWTr2xZdoP+n7IGB6NDeWVL0gdblr/ZkvTDi5VO75kTE9hypqexeHgYLSqqb78YBTHqbsUoEqPwwaFKpRJaliU019fX4aIopSi6OOfhoorFIt7c3AjN5eVl3FMN15NClctlZIwJjWma7feiYIyFizIMA6+uroTGMIy4pxquJ4WqVCrouq7QWJYVLsr7QdFFKQ3/+HmNLDIk7qmAUN73n8iQsFG2bbdfT5mmiY7jCE2lUol7quGKUeSRoPSQbrw0E8Mw3j2Ku0lNxASAF4kgbpERQipRgwCAEUI+JoKqQqHwEgCGAOBLRMkQQl4HBoorEV39Ao9Z9ZpvVIYRAAAAAElFTkSuQmCC" alt="PDF Icon">
                             </div>
                             <p class="dropzone-text">Arraste seu template PDF aqui</p>
                             <p class="dropzone-subtext">ou clique para selecionar</p>
@@ -86,7 +87,11 @@
                                 <p class="status-filename" id="welcomeTemplateFilename"></p>
                                 <p class="status-size" id="welcomeTemplateSize"></p>
                             </div>
-                            <button class="btn-remove" onclick="resetWelcomeTemplate()">✕</button>
+                            <button class="btn-remove" onclick="resetWelcomeTemplate()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+                                    <linearGradient id="btnRemoveTemplateGr1" x1="7.534" x2="27.557" y1="7.534" y2="27.557" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f44f5a"></stop><stop offset=".443" stop-color="#ee3d4a"></stop><stop offset="1" stop-color="#e52030"></stop></linearGradient><path fill="url(#btnRemoveTemplateGr1)" d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"></path><linearGradient id="btnRemoveTemplateGr2" x1="27.373" x2="40.507" y1="27.373" y2="40.507" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a8142e"></stop><stop offset=".179" stop-color="#ba1632"></stop><stop offset=".243" stop-color="#c21734"></stop></linearGradient><path fill="url(#btnRemoveTemplateGr2)" d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                     <div class="upload-card-footer">
@@ -163,9 +168,9 @@
             <aside class="properties-panel">
                 <!-- Upload Section -->
                 <div class="panel-section">
-                    <h3 class="panel-title">📁 Upload Excel</h3>
+                    <h3 class="panel-title">Upload Excel</h3>
                     <div class="upload-box" id="uploadBox">
-                        <div class="upload-icon">📊</div>
+                        <div class="upload-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZUlEQVR4nO3aS2jTcBwH8Hrx4kmci/jWsYsXXyAePMiGB3G7uYMoguKyudfFQX2B6BA3D+6wiQdFDyrIZCKCqIdmHZ2be7MpPta6Ura1S5r/v83W9d38JNENdenov02ytPQH38ufJvTTJP/88m9MpnzlQPn9/iKMcQ1CyKxFWJZt1BWEMS5HCAURQqBVZmZmwOVyDekCAoA1CCG3lqBFlN1u1weGENqmNehvlC4wjuOK9Ub9gQ3nHMquJYxbRZRmMC4JKhaLgSiKRAmHw8QoTWBcElQoFIJIJEKUQCCQFOV2u5OipDidzuGsO/04jlsRpSqM0wklxePxgMPh0B7G6YhaDMuyMDs7mzQej6dcE5R0fSwsLBBlbm5OFTTG+IQmKGk2I61oNGpsFPq9c6KodXpiLVFq5Z1rEOrHHsHZkbaUsr/HbCtk6A6KoZ9TDN2wp6NiraFQnc4e2MRUAcXQaafQUvnSUKhTQ60ZgSgpFlrcbru43jBt0vH+28u+5NH+m1Ax2gqH+q4ujW3uqoaTo/fk8S1d1cu2KbBWFWeMCgaD8pckyfz8fEqosuEWiIsJmArxsLu7Xh5rcnTKM+gzt03xaKmCUitKKCntrvcy4uGUBY58ugHhRBQmgywUdTdkL2qbtQa+BqYhIYoyJpqIwbFB5c9S2YKSUjrQJKOkap58veJkUaAGShAE+Rohid/vJ0I1fn+61I0w6MuKU3+BGii12qRkqMN91yEQDwMbEaDf75C3vzbxQluUz+eTjxZJlFolJZQ0ZQ8JP0EEEU6PtcG+j2bwRQMQScSgZOBWdl5TdyffyEfm8XTX0tj5zw/ksR8BN+yw1mYf6kDvZfnGu9Va88/4wd4r8rjhUedG7qvQJlXGqA9n1mWMkhZSpFaJJFIX8v9+bNPjsNNalxGqkKHvpAzSAyVl3OOA9om30PLtVUopG2h+QjG0eaOlspGyXCghAulx+uXsQyLKo5B2qHRuvqRRaquQ0VaT0inpx9MNJaTR0JIm2Tohzl9TCpVHoSxHhdL4f4o00mKN0uMK1gqVzhIZaeLxuL6zH8rF0w/lUchYKKTTGy8k8Xq9pVnxblKq4Xk+LAjCBlOmhTEu0/otshRBcZ7n60xqlc/n2+X1emt5nm9ejSCELmGM96oGypfJWPUL5sWswEbVVLEAAAAASUVORK5CYII=" alt="Excel Icon"></div>
                         <p>Arraste ou clique</p>
                         <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
                         <button class="btn btn-sm" onclick="document.getElementById('fileInput').click()">
@@ -173,20 +178,31 @@
                         </button>
                     </div>
                     <div class="file-info" id="fileInfo" style="display: none;">
-                        <div class="file-icon">📊</div>
+                        <div class="file-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZUlEQVR4nO3aS2jTcBwH8Hrx4kmci/jWsYsXXyAePMiGB3G7uYMoguKyudfFQX2B6BA3D+6wiQdFDyrIZCKCqIdmHZ2be7MpPta6Ura1S5r/v83W9d38JNENdenov02ytPQH38ufJvTTJP/88m9MpnzlQPn9/iKMcQ1CyKxFWJZt1BWEMS5HCAURQqBVZmZmwOVyDekCAoA1CCG3lqBFlN1u1weGENqmNehvlC4wjuOK9Ub9gQ3nHMquJYxbRZRmMC4JKhaLgSiKRAmHw8QoTWBcElQoFIJIJEKUQCCQFOV2u5OipDidzuGsO/04jlsRpSqM0wklxePxgMPh0B7G6YhaDMuyMDs7mzQej6dcE5R0fSwsLBBlbm5OFTTG+IQmKGk2I61oNGpsFPq9c6KodXpiLVFq5Z1rEOrHHsHZkbaUsr/HbCtk6A6KoZ9TDN2wp6NiraFQnc4e2MRUAcXQaafQUvnSUKhTQ60ZgSgpFlrcbru43jBt0vH+28u+5NH+m1Ax2gqH+q4ujW3uqoaTo/fk8S1d1cu2KbBWFWeMCgaD8pckyfz8fEqosuEWiIsJmArxsLu7Xh5rcnTKM+gzt03xaKmCUitKKCntrvcy4uGUBY58ugHhRBQmgywUdTdkL2qbtQa+BqYhIYoyJpqIwbFB5c9S2YKSUjrQJKOkap58veJkUaAGShAE+Rohid/vJ0I1fn+61I0w6MuKU3+BGii12qRkqMN91yEQDwMbEaDf75C3vzbxQluUz+eTjxZJlFolJZQ0ZQ8JP0EEEU6PtcG+j2bwRQMQScSgZOBWdl5TdyffyEfm8XTX0tj5zw/ksR8BN+yw1mYf6kDvZfnGu9Va88/4wd4r8rjhUedG7qvQJlXGqA9n1mWMkhZSpFaJJFIX8v9+bNPjsNNalxGqkKHvpAzSAyVl3OOA9om30PLtVUopG2h+QjG0eaOlspGyXCghAulx+uXsQyLKo5B2qHRuvqRRaquQ0VaT0inpx9MNJaTR0JIm2Tohzl9TCpVHoSxHhdL4f4o00mKN0uMK1gqVzhIZaeLxuL6zH8rF0w/lUchYKKTTGy8k8Xq9pVnxblKq4Xk+LAjCBlOmhTEu0/otshRBcZ7n60xqlc/n2+X1emt5nm9ejSCELmGM96oGypfJWPUL5sWswEbVVLEAAAAASUVORK5CYII=" alt="Excel Icon"></div>
                         <div class="file-details">
                             <p class="file-name" id="fileName"></p>
                             <p class="file-size" id="fileSize"></p>
                         </div>
-                        <button class="btn-remove" style="width: auto; height: auto; font-size: 15px; padding: 3px 7px;" onclick="resetUpload()">✕</button>
+                        <button class="btn-remove" style="width: 26px; height: 26px; min-width: 10px; min-height: 10px; padding: 3px 7px;" onclick="resetUpload()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48" style="width: 16px; height: 16px;">
+                                <linearGradient id="btnRemoveExcelMainGr1" x1="7.534" x2="27.557" y1="7.534" y2="27.557" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f44f5a"></stop><stop offset=".443" stop-color="#ee3d4a"></stop><stop offset="1" stop-color="#e52030"></stop></linearGradient><path fill="url(#btnRemoveExcelMainGr1)" d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"></path><linearGradient id="btnRemoveExcelMainGr2" x1="27.373" x2="40.507" y1="27.373" y2="40.507" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a8142e"></stop><stop offset=".179" stop-color="#ba1632"></stop><stop offset=".243" stop-color="#c21734"></stop></linearGradient><path fill="url(#btnRemoveExcelMainGr2)" d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
                 <!-- PDF Template Section -->
                 <div class="panel-section">
-                    <h3 class="panel-title">📄 Template PDF</h3>
+                    <div class="panel-section-header">
+                        <h3 class="panel-title">Template PDF</h3>
+                        <!-- Use Default Template Checkbox -->
+                        <label class="checkbox-label checkbox-header">
+                            <input type="checkbox" id="useDefaultTemplateMain" onchange="toggleDefaultTemplateMain()">
+                            <span>Usar padrão</span>
+                        </label>
+                    </div>
                     <div class="upload-box" id="pdfTemplateBox">
-                        <div class="upload-icon">📄</div>
+                        <div class="upload-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC4klEQVR4nO3aMU/bQBQH8Kjd+ymKurR7h46ou20FlAxAQV0oDAFBBwYGGCoRmJAygIQAUSEGJKZWdGBgQFRIfAAjAUIojnnnQCCOfXf2q+yoCRWtmgSfDcFP+i+nk3I/3z3HwyUScbVp6brecXFx8YkQ8llENE3LhAoCAAUALEIIisr5+TmenJzshQJCxOcAACJBv1GqqoYD03W9QzToNioUmGEYb8JGeTk9Pd1vO5RQmBEhShUFixqlqioeHx//bBmAk5PPqCR9tWWZUVnGIGKn01ja2roXSr3Py4NK0tugMH/Aenv/i9J1HY+OjoKHMUV5X1uMoiBfXa1mYQHZ0JA/zsbHq2PLy8hnZ5GmUtX5qVR9vpeZmTqsu7uhI5jP54OHsduoZBKRUuS5HPKVFXQJQTY8jHxpCd2DAx/qfP+Obj6PdGAAaV8fYqlUnZ/LIZuaahrlBQCwUCigpmn/DAB0to4ql2sLc7a3kc/P+yhnY6M2ztfX0dnc9FGurv/9CDaBahDe2TrKtpFns/6TdwGQjYzcRWWz6OzsVHeKc3Q1zQ+fm3ugKEr9XeBra8jGxqqI2yhFQWd3F/ni4iPaqXL9+NV2xuupszN09vf9fvJQtKvrkaAUBdno6N0F9vf7u+YdRdrTUx9PJpFlMg8PZSWTr2xZdoP+n7IGB6NDeWVL0gdblr/ZkvTDi5VO75kTE9hypqexeHgYLSqqb78YBTHqbsUoEqPwwaFKpRJaliU019fX4aIopSi6OOfhoorFIt7c3AjN5eVl3FMN15NClctlZIwJjWma7feiYIyFizIMA6+uroTGMIy4pxquJ4WqVCrouq7QWJYVLsr7QdFFKQ3/+HmNLDIk7qmAUN73n8iQsFG2bbdfT5mmiY7jCE2lUol7quGKUeSRoPSQbrw0E8Mw3j2Ku0lNxASAF4kgbpERQipRgwCAEUI+JoKqQqHwEgCGAOBLRMkQQl4HBoorEV39Ao9Z9ZpvVIYRAAAAAElFTkSuQmCC" alt="PDF Icon"></div>
                         <p>Arraste ou clique</p>
                         <input type="file" id="pdfTemplateInput" accept=".pdf" hidden>
                         <button class="btn btn-sm" onclick="document.getElementById('pdfTemplateInput').click()">
@@ -194,23 +210,27 @@
                         </button>
                     </div>
                     <div class="file-info" id="pdfTemplateInfo" style="display: none;">
-                        <div class="file-icon">📄</div>
+                        <div class="file-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC4klEQVR4nO3aMU/bQBQH8Kjd+ymKurR7h46ou20FlAxAQV0oDAFBBwYGGCoRmJAygIQAUSEGJKZWdGBgQFRIfAAjAUIojnnnQCCOfXf2q+yoCRWtmgSfDcFP+i+nk3I/3z3HwyUScbVp6brecXFx8YkQ8llENE3LhAoCAAUALEIIisr5+TmenJzshQJCxOcAACJBv1GqqoYD03W9QzToNioUmGEYb8JGeTk9Pd1vO5RQmBEhShUFixqlqioeHx//bBmAk5PPqCR9tWWZUVnGIGKn01ja2roXSr3Py4NK0tugMH/Aenv/i9J1HY+OjoKHMUV5X1uMoiBfXa1mYQHZ0JA/zsbHq2PLy8hnZ5GmUtX5qVR9vpeZmTqsu7uhI5jP54OHsduoZBKRUuS5HPKVFXQJQTY8jHxpCd2DAx/qfP+Obj6PdGAAaV8fYqlUnZ/LIZuaahrlBQCwUCigpmn/DAB0to4ql2sLc7a3kc/P+yhnY6M2ztfX0dnc9FGurv/9CDaBahDe2TrKtpFns/6TdwGQjYzcRWWz6OzsVHeKc3Q1zQ+fm3ugKEr9XeBra8jGxqqI2yhFQWd3F/ni4iPaqXL9+NV2xuupszN09vf9fvJQtKvrkaAUBdno6N0F9vf7u+YdRdrTUx9PJpFlMg8PZSWTr2xZdoP+n7IGB6NDeWVL0gdblr/ZkvTDi5VO75kTE9hypqexeHgYLSqqb78YBTHqbsUoEqPwwaFKpRJaliU019fX4aIopSi6OOfhoorFIt7c3AjN5eVl3FMN15NClctlZIwJjWma7feiYIyFizIMA6+uroTGMIy4pxquJ4WqVCrouq7QWJYVLsr7QdFFKQ3/+HmNLDIk7qmAUN73n8iQsFG2bbdfT5mmiY7jCE2lUol7quGKUeSRoPSQbrw0E8Mw3j2Ku0lNxASAF4kgbpERQipRgwCAEUI+JoKqQqHwEgCGAOBLRMkQQl4HBoorEV39Ao9Z9ZpvVIYRAAAAAElFTkSuQmCC" alt="PDF Icon"></div>
                         <div class="file-details">
                             <p class="file-name" id="pdfTemplateName"></p>
                             <p class="file-size" id="pdfTemplateSize"></p>
                         </div>
-                        <button class="btn-remove" style="width: auto; height: auto; font-size: 15px; padding: 3px 7px;" onclick="resetPDFTemplate()">✕</button>
+                        <button class="btn-remove" style="width: 26px; height: 26px; min-width: 10px; min-height: 10px; font-size: 15px; padding: 3px 7px;" onclick="resetPDFTemplate()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48" style="width: 16px; height: 16px;">
+                                <linearGradient id="btnRemoveTemplateMainGr1" x1="7.534" x2="27.557" y1="7.534" y2="27.557" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f44f5a"></stop><stop offset=".443" stop-color="#ee3d4a"></stop><stop offset="1" stop-color="#e52030"></stop></linearGradient><path fill="url(#btnRemoveTemplateMainGr1)" d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"></path><linearGradient id="btnRemoveTemplateMainGr2" x1="27.373" x2="40.507" y1="27.373" y2="40.507" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a8142e"></stop><stop offset=".179" stop-color="#ba1632"></stop><stop offset=".243" stop-color="#c21734"></stop></linearGradient><path fill="url(#btnRemoveTemplateMainGr2)" d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Field Positioning -->
                 <div class="panel-section accordion-section" id="fieldPositioning" style="display: none;">
-                    <h3 class="panel-title accordion-toggle">Posicionar Campos <span class="accordion-icon">▼</span></h3>
+                    <h3 class="panel-title accordion-toggle">Posicionar Campos <button class="accordion-icon btn-image-action"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABz0lEQVR4nO2Uy0oCURyH5wkSKrIh1G7OTDebNj1Cuyh6g96lFm2SFmVKEGohZRdCky70AC2ilVFUk+I54zRq7dqEnAiamNJyrDM6A/8Pfvvv+8M5DAMAAAAAAAAAwH9xRzOsK5JLuMPoxR1BhNbYUIbaOoMSafdfKY65c7EiwBVGSZriZgSwH2tfTCuVAZFc1i4BzuXb14oAzzoWXGEkWz3AuXJfdsxfzFR9B2ZENEzerAhqDzhwV1vejAhq8guX04bkaUc0RV6jO4r4/0Y0TZ5WRFPl9RGeKMaeDUzq3Z/kV+/Lbf40HXl9RM8Gxj2bmNSzuuWDUrlt6XqKqvxnxDbie2My7o3JxOjqCgg+lDsCkjnyXyK2ZNy3lSdGZjzgwXx5DX4b8f3xPPbGFVJrhi8fapC8hrCnct6dPOZ2FfLbDF0+lG2svD5C2FOwsP9Ifppl5fURAwePeOBAJdX2m7xzNTvJWAHhUOUGEyoeTBTI91leXsN3qHJDyQIaThaJfraQ1xATqnc4VUAjqSLRZht5DfFE9Y4clZDvqETeZyt5Dd+pyo0elzLiydPHP595ZdekCcZOjKeKLWNnz7OdQWmtNXDT1WwfAAAAAGCsyBurBlk9BFq7AAAAAABJRU5ErkJggg==" alt="sort-down"></button></h3>
 
                     <div class="panel-content">
                         <div class="field-groups">
                             <!-- Nome Field -->
-                            <div class="field-group">
+                            <div class="field-group nome">
                                 <h4>Nome</h4>
                                 <div class="field-coordinates">
                                     <div class="coord-input">
@@ -350,7 +370,11 @@
                     <button class="month-modal-nav-btn" onclick="navigateMonth(1)" title="Próximo Mês">
                         <img src="https://img.icons8.com/fluency/48/back.png" alt="back" class="nav-icon rotate-180" />
                     </button>
-                    <button class="btn-remove" onclick="closeMonthModal()">✕</button>
+                    <button class="btn-remove" onclick="closeMonthModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+                            <linearGradient id="btnRemoveMonthModalGr1" x1="7.534" x2="27.557" y1="7.534" y2="27.557" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f44f5a"></stop><stop offset=".443" stop-color="#ee3d4a"></stop><stop offset="1" stop-color="#e52030"></stop></linearGradient><path fill="url(#btnRemoveMonthModalGr1)" d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"></path><linearGradient id="btnRemoveMonthModalGr2" x1="27.373" x2="40.507" y1="27.373" y2="40.507" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a8142e"></stop><stop offset=".179" stop-color="#ba1632"></stop><stop offset=".243" stop-color="#c21734"></stop></linearGradient><path fill="url(#btnRemoveMonthModalGr2)" d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"></path>
+                        </svg>
+                    </button>
                 </div>
                 <div class="month-modal-body">
                     <div class="month-modal-summary" id="monthModalSummary"></div>
