@@ -99,10 +99,10 @@ body {
 }
 
 .btn-generate {
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--color3) 100%);
+    background: none;
     color: var(--white);
     padding: 10px 24px;
-    border: none;
+    border: 1px solid var(--accent-hover);
     border-radius: 6px;
     font-size: 14px;
     font-weight: 600;
@@ -111,12 +111,14 @@ body {
     align-items: center;
     gap: 8px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-generate:hover {
-    background: linear-gradient(135deg, var(--color2) 0%, var(--color4) 100%);
+    background: rgba(0, 143, 252, 0.1);
+    border: 1px solid var(--accent-hover);
+    box-shadow: 0 4px 8px rgba(0, 120, 212, 0.4);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.4);
 }
 
 .btn-generate:active {
@@ -125,6 +127,17 @@ body {
 
 .btn-icon {
     font-size: 16px;
+}
+
+.btn-icon img {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-icon:hover img {
+    filter: drop-shadow(0 0 2px rgba(0, 120, 212, 0.8));
+    scale: 1.15;
 }
 
 /* App Body - 3 Column Grid */
@@ -447,11 +460,6 @@ body {
     transition: all 0.2s ease;
 }
 
-.btn-icon:hover {
-    background: var(--error-color);
-    color: var(--white);
-}
-
 /* Buttons */
 .btn {
     padding: 8px 16px;
@@ -485,14 +493,29 @@ body {
     transform: translateY(-1px);
 }
 
+.btn-primary img {
+    width: 20px;
+    height: 20px;
+}
+
 .btn-secondary {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    background: none;
+    color: var(--white);
+    border: 1px solid var(--accent-hover);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary:hover {
-    background: var(--border-color);
+    background: rgba(0, 143, 252, 0.1);
+    border: 1px solid var(--accent-hover);
+    box-shadow: 0 4px 8px rgba(0, 120, 212, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-secondary img {
+    width: 20px;
+    height: 20px;
+    rotate: 45deg;
 }
 
 .btn-success {
@@ -951,6 +974,12 @@ input[type="checkbox"]:focus {
 
 .result-icon {
     font-size: 20px;
+    max-height: 27px;
+}
+
+.result-icon img {
+    width: 27px;
+    height: 27px;
 }
 
 .result-info {

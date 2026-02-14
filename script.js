@@ -1452,14 +1452,14 @@ async function generateAllCards() {
 
 function displayResults() {
     resultsPanelSection.style.display = 'block';
-    resultsSummary.textContent = `✅ ${generatedPDFs.length} cartões gerados!`;
+    resultsSummary.textContent = `${generatedPDFs.length} cartões gerados!`;
 
     resultsList.innerHTML = '';
     generatedPDFs.forEach((pdf, index) => {
         const item = document.createElement('div');
         item.className = 'result-item';
         item.innerHTML = `
-            <div class="result-icon">📄</div>
+            <div class="result-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA1CAYAAADh5qNwAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC4klEQVR4nO3aMU/bQBQH8Kjd+ymKurR7h46ou20FlAxAQV0oDAFBBwYGGCoRmJAygIQAUSEGJKZWdGBgQFRIfAAjAUIojnnnQCCOfXf2q+yoCRWtmgSfDcFP+i+nk3I/3z3HwyUScbVp6brecXFx8YkQ8llENE3LhAoCAAUALEIIisr5+TmenJzshQJCxOcAACJBv1GqqoYD03W9QzToNioUmGEYb8JGeTk9Pd1vO5RQmBEhShUFixqlqioeHx//bBmAk5PPqCR9tWWZUVnGIGKn01ja2roXSr3Py4NK0tugMH/Aenv/i9J1HY+OjoKHMUV5X1uMoiBfXa1mYQHZ0JA/zsbHq2PLy8hnZ5GmUtX5qVR9vpeZmTqsu7uhI5jP54OHsduoZBKRUuS5HPKVFXQJQTY8jHxpCd2DAx/qfP+Obj6PdGAAaV8fYqlUnZ/LIZuaahrlBQCwUCigpmn/DAB0to4ql2sLc7a3kc/P+yhnY6M2ztfX0dnc9FGurv/9CDaBahDe2TrKtpFns/6TdwGQjYzcRWWz6OzsVHeKc3Q1zQ+fm3ugKEr9XeBra8jGxqqI2yhFQWd3F/ni4iPaqXL9+NV2xuupszN09vf9fvJQtKvrkaAUBdno6N0F9vf7u+YdRdrTUx9PJpFlMg8PZSWTr2xZdoP+n7IGB6NDeWVL0gdblr/ZkvTDi5VO75kTE9hypqexeHgYLSqqb78YBTHqbsUoEqPwwaFKpRJaliU019fX4aIopSi6OOfhoorFIt7c3AjN5eVl3FMN15NClctlZIwJjWma7feiYIyFizIMA6+uroTGMIy4pxquJ4WqVCrouq7QWJYVLsr7QdFFKQ3/+HmNLDIk7qmAUN73n8iQsFG2bbdfT5mmiY7jCE2lUol7quGKUeSRoPSQbrw0E8Mw3j2Ku0lNxASAF4kgbpERQipRgwCAEUI+JoKqQqHwEgCGAOBLRMkQQl4HBoorEV39Ao9Z9ZpvVIYRAAAAAElFTkSuQmCC" alt="PDF Icon"></div>
             <div class="result-info">
                 <div class="result-name">${pdf.data.Nome || 'Sem nome'}</div>
                 <div class="result-status">✓ PDF gerado</div>
