@@ -18,6 +18,8 @@ let currentZoom = 100;
 let selectedIndices = new Set();
 let selectedMonths = new Set();
 let modalSelectedIndices = new Set();
+let modalSelectionsByMonth = {}; // Store committed selections for each month
+let tempModalSelectionsByMonth = {}; // Store temporary selections (only committed on OK)
 let currentModalMonth = null;
 
 // Welcome Modal State
@@ -920,6 +922,16 @@ function toggleMonthSelection(month) {
         }
     });
 
+    // Update committed selections for this month to match the main selection
+    // This ensures that when the modal is opened, it shows the correct selections
+    const monthCommittedSelections = new Set();
+    monthData.forEach(row => {
+        if (selectedIndices.has(row.originalIndex)) {
+            monthCommittedSelections.add(row.originalIndex);
+        }
+    });
+    modalSelectionsByMonth[month] = monthCommittedSelections;
+
     // Update month tab status
     updateMonthTabStatus(month);
 
@@ -972,16 +984,32 @@ function updateSelectionCounter() {
 // ========================================
 
 function openMonthModal(month) {
+    // Save current temporary modal selections before switching months
+    if (currentModalMonth && modalSelectedIndices.size > 0) {
+        tempModalSelectionsByMonth[currentModalMonth] = new Set(modalSelectedIndices);
+    }
+    
     currentModalMonth = month;
-    modalSelectedIndices = new Set();
-
-    // Copy currently selected indices for this month to modal selection
-    if (dataByMonth[month]) {
-        dataByMonth[month].forEach(row => {
-            if (selectedIndices.has(row.originalIndex)) {
-                modalSelectedIndices.add(row.originalIndex);
-            }
-        });
+    
+    // Load committed selections for this month, or start fresh if none exist
+    if (modalSelectionsByMonth[month]) {
+        modalSelectedIndices = new Set(modalSelectionsByMonth[month]);
+    } else {
+        modalSelectedIndices = new Set();
+        // Copy currently selected indices for this month to modal selection
+        if (dataByMonth[month]) {
+            dataByMonth[month].forEach(row => {
+                if (selectedIndices.has(row.originalIndex)) {
+                    modalSelectedIndices.add(row.originalIndex);
+                }
+            });
+        }
+    }
+    
+    // Also check if there are temporary selections for this month (from previous modal session)
+    // If so, use those instead of the committed selections
+    if (tempModalSelectionsByMonth[month]) {
+        modalSelectedIndices = new Set(tempModalSelectionsByMonth[month]);
     }
 
     // Update modal title
@@ -1077,7 +1105,17 @@ function updateModalNavigationButtons() {
     }
 }
 
-function closeMonthModal() {
+function closeMonthModal(saveSelections = false) {
+    // If not saving (cancel), clear all temporary selections
+    if (!saveSelections) {
+        tempModalSelectionsByMonth = {};
+    }
+    
+    // Save current modal selections before closing (only if explicitly requested)
+    if (saveSelections && currentModalMonth && modalSelectedIndices.size > 0) {
+        modalSelectionsByMonth[currentModalMonth] = new Set(modalSelectedIndices);
+    }
+    
     const monthModal = document.getElementById('monthModal');
     monthModal.style.display = 'none';
     currentModalMonth = null;
@@ -1091,6 +1129,11 @@ function toggleModalSelection(index) {
         modalSelectedIndices.delete(index);
     } else {
         modalSelectedIndices.add(index);
+    }
+
+    // Save current modal selections to temporary storage
+    if (currentModalMonth) {
+        tempModalSelectionsByMonth[currentModalMonth] = new Set(modalSelectedIndices);
     }
 
     // Update modal summary
@@ -1107,6 +1150,9 @@ function selectAllInModal() {
         modalSelectedIndices.add(row.originalIndex);
     });
 
+    // Save current modal selections to temporary storage
+    tempModalSelectionsByMonth[currentModalMonth] = new Set(modalSelectedIndices);
+
     // Update all checkboxes in the modal table
     document.querySelectorAll('.modal-checkbox').forEach(cb => {
         cb.checked = true;
@@ -1121,6 +1167,11 @@ function selectAllInModal() {
 
 function deselectAllInModal() {
     modalSelectedIndices.clear();
+
+    // Save current modal selections (empty set) to temporary storage
+    if (currentModalMonth) {
+        tempModalSelectionsByMonth[currentModalMonth] = new Set();
+    }
 
     // Update all checkboxes in the modal table
     document.querySelectorAll('.modal-checkbox').forEach(cb => {
@@ -1168,25 +1219,40 @@ function updateModalSummary() {
 }
 
 function saveModalSelections() {
-    // Apply modal selections to main selection
-    if (currentModalMonth && dataByMonth[currentModalMonth]) {
-        dataByMonth[currentModalMonth].forEach(row => {
-            if (modalSelectedIndices.has(row.originalIndex)) {
-                selectedIndices.add(row.originalIndex);
-            } else {
-                selectedIndices.delete(row.originalIndex);
-            }
-        });
+    // Save current temporary selections before committing
+    if (currentModalMonth && modalSelectedIndices.size > 0) {
+        tempModalSelectionsByMonth[currentModalMonth] = new Set(modalSelectedIndices);
+    }
+    
+    // Commit temporary selections to committed storage
+    for (const month in tempModalSelectionsByMonth) {
+        modalSelectionsByMonth[month] = new Set(tempModalSelectionsByMonth[month]);
+        
+        // Apply modal selections to main selection
+        if (dataByMonth[month]) {
+            dataByMonth[month].forEach(row => {
+                if (tempModalSelectionsByMonth[month].has(row.originalIndex)) {
+                    selectedIndices.add(row.originalIndex);
+                } else {
+                    selectedIndices.delete(row.originalIndex);
+                }
+            });
+        }
     }
 
-    // Update month tab status
-    updateMonthTabStatus(currentModalMonth);
+    // Update month tab status for all months with temporary selections
+    for (const month in tempModalSelectionsByMonth) {
+        updateMonthTabStatus(month);
+    }
 
     // Update selection counter
     updateSelectionCounter();
 
-    // Close modal
-    closeMonthModal();
+    // Clear temporary selections after committing
+    tempModalSelectionsByMonth = {};
+
+    // Close modal and save selections
+    closeMonthModal(true);
 }
 
 function navigateMonth(direction) {
@@ -1215,30 +1281,51 @@ function navigateMonth(direction) {
 }
 
 async function downloadSelectedFromModal() {
-    if (modalSelectedIndices.size === 0) {
+    // Save current temporary selections before committing
+    if (currentModalMonth && modalSelectedIndices.size > 0) {
+        tempModalSelectionsByMonth[currentModalMonth] = new Set(modalSelectedIndices);
+    }
+    
+    // Check if there are any selections in any month
+    let totalSelections = 0;
+    for (const month in tempModalSelectionsByMonth) {
+        totalSelections += tempModalSelectionsByMonth[month].size;
+    }
+    
+    if (totalSelections === 0) {
         showErrorAlert('Por favor, selecione pelo menos um cartão para baixar.');
         return;
     }
 
-    // Apply modal selections to main selection
-    if (currentModalMonth && dataByMonth[currentModalMonth]) {
-        dataByMonth[currentModalMonth].forEach(row => {
-            if (modalSelectedIndices.has(row.originalIndex)) {
-                selectedIndices.add(row.originalIndex);
-            } else {
-                selectedIndices.delete(row.originalIndex);
-            }
-        });
+    // Commit temporary selections to committed storage
+    for (const month in tempModalSelectionsByMonth) {
+        modalSelectionsByMonth[month] = new Set(tempModalSelectionsByMonth[month]);
+        
+        // Apply modal selections to main selection
+        if (dataByMonth[month]) {
+            dataByMonth[month].forEach(row => {
+                if (tempModalSelectionsByMonth[month].has(row.originalIndex)) {
+                    selectedIndices.add(row.originalIndex);
+                } else {
+                    selectedIndices.delete(row.originalIndex);
+                }
+            });
+        }
     }
 
-    // Update month tab status
-    updateMonthTabStatus(currentModalMonth);
+    // Update month tab status for all months
+    for (const month in tempModalSelectionsByMonth) {
+        updateMonthTabStatus(month);
+    }
 
     // Update selection counter
     updateSelectionCounter();
 
-    // Close modal
-    closeMonthModal();
+    // Clear temporary selections after committing
+    tempModalSelectionsByMonth = {};
+
+    // Close modal and save selections
+    closeMonthModal(true);
 
     // Download selected cards
     await downloadSelectedCards();
@@ -1473,9 +1560,17 @@ async function downloadAllCards() {
         // Create a new ZIP file
         const zip = new JSZip();
 
-        // Add all PDFs to the ZIP
+        // Add all PDFs to the ZIP, organized by month folders
         generatedPDFs.forEach(pdf => {
-            zip.file(pdf.name, pdf.blob);
+            // Extract month from data if available
+            let month = 'Outros';
+            if (pdf.data && pdf.data.Data) {
+                month = parseMonthFromDate(pdf.data.Data);
+            }
+            
+            // Create folder path: month/filename
+            const folderPath = `${month}/`;
+            zip.file(folderPath + pdf.name, pdf.blob);
         });
 
         // Generate the ZIP file
@@ -1485,7 +1580,7 @@ async function downloadAllCards() {
         const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
         download(zipBlob, `cartoes_${timestamp}.zip`);
 
-        showSuccessAlert(`✅ ${generatedPDFs.length} cartões baixados como arquivo ZIP!`);
+        showSuccessAlert(`✅ ${generatedPDFs.length} cartões baixados como arquivo ZIP organizado por mês!`);
     } catch (error) {
         console.error('Erro ao criar arquivo ZIP:', error);
         showErrorAlert('Erro ao criar arquivo ZIP: ' + error.message);
@@ -1548,7 +1643,8 @@ async function downloadSelectedCards() {
 
                 generatedPDFs.push({
                     name: filename,
-                    blob: pdfBlob
+                    blob: pdfBlob,
+                    data: data
                 });
             }
         } catch (error) {
@@ -1563,9 +1659,17 @@ async function downloadSelectedCards() {
         // Create a new ZIP file
         const zip = new JSZip();
 
-        // Add all PDFs to the ZIP
+        // Add all PDFs to the ZIP, organized by month folders
         generatedPDFs.forEach(pdf => {
-            zip.file(pdf.name, pdf.blob);
+            // Extract month from data if available
+            let month = 'Outros';
+            if (pdf.data && pdf.data.Data) {
+                month = parseMonthFromDate(pdf.data.Data);
+            }
+            
+            // Create folder path: month/filename
+            const folderPath = `${month}/`;
+            zip.file(folderPath + pdf.name, pdf.blob);
         });
 
         // Generate the ZIP file
@@ -1575,7 +1679,7 @@ async function downloadSelectedCards() {
         const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
         download(zipBlob, `cartoes_${timestamp}.zip`);
 
-        showSuccessAlert(`✅ ${generatedPDFs.length} cartões baixados como arquivo ZIP!`);
+        showSuccessAlert(`✅ ${generatedPDFs.length} cartões baixados como arquivo ZIP organizado por mês!`);
     } catch (error) {
         console.error('Erro ao criar arquivo ZIP:', error);
         showErrorAlert('Erro ao criar arquivo ZIP: ' + error.message);
