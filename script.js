@@ -317,15 +317,31 @@ function handleWelcomeExcel(file) {
             // Get headers
             const headers = jsonData[0].map(h => h ? h.toString().trim() : '');
 
-            // Validate required columns
+            // Validate required columns (case-insensitive)
             const requiredColumns = ['Nome', 'Vocativo', 'Data'];
-            const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+            const headersLower = headers.map(h => h.toLowerCase());
+            const missingColumns = requiredColumns.filter(col => !headersLower.includes(col.toLowerCase()));
 
             if (missingColumns.length > 0) {
                 showErrorAlert(`Colunas obrigatórias faltando: ${missingColumns.join(', ')}. O arquivo deve ter as colunas: Nome, Vocativo, Data`);
                 resetWelcomeExcel();
                 return;
             }
+
+            // Create mapping from lowercase to standard column names
+            const columnMapping = {};
+            headers.forEach((header, index) => {
+                const headerLower = header.toLowerCase();
+                if (headerLower === 'nome') {
+                    columnMapping[index] = 'Nome';
+                } else if (headerLower === 'vocativo') {
+                    columnMapping[index] = 'Vocativo';
+                } else if (headerLower === 'data') {
+                    columnMapping[index] = 'Data';
+                } else {
+                    columnMapping[index] = header;
+                }
+            });
 
             // Parse data
             welcomeExcelData = [];
@@ -335,9 +351,10 @@ function handleWelcomeExcel(file) {
                     const rowData = {};
                     headers.forEach((header, index) => {
                         let value = row[index];
+                        const standardName = columnMapping[index];
 
-                        // Handle date conversion
-                        if (header === 'Data' && value !== undefined && value !== null && value !== '') {
+                        // Handle date conversion (case-insensitive)
+                        if (standardName === 'Data' && value !== undefined && value !== null && value !== '') {
                             if (value instanceof Date) {
                                 const day = String(value.getDate()).padStart(2, '0');
                                 const month = String(value.getMonth() + 1).padStart(2, '0');
@@ -353,7 +370,7 @@ function handleWelcomeExcel(file) {
                             value = value ? value.toString().trim() : '';
                         }
 
-                        rowData[header] = value;
+                        rowData[standardName] = value;
                     });
                     welcomeExcelData.push(rowData);
                 }
@@ -849,15 +866,31 @@ function handleFile(file) {
             // Get headers
             const headers = jsonData[0].map(h => h ? h.toString().trim() : '');
 
-            // Validate required columns
+            // Validate required columns (case-insensitive)
             const requiredColumns = ['Nome', 'Vocativo', 'Data'];
-            const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+            const headersLower = headers.map(h => h.toLowerCase());
+            const missingColumns = requiredColumns.filter(col => !headersLower.includes(col.toLowerCase()));
 
             if (missingColumns.length > 0) {
                 showErrorAlert(`Colunas obrigatórias faltando: ${missingColumns.join(', ')}. O arquivo deve ter as colunas: Nome, Vocativo, Data`);
                 resetUpload();
                 return;
             }
+
+            // Create mapping from lowercase to standard column names
+            const columnMapping = {};
+            headers.forEach((header, index) => {
+                const headerLower = header.toLowerCase();
+                if (headerLower === 'nome') {
+                    columnMapping[index] = 'Nome';
+                } else if (headerLower === 'vocativo') {
+                    columnMapping[index] = 'Vocativo';
+                } else if (headerLower === 'data') {
+                    columnMapping[index] = 'Data';
+                } else {
+                    columnMapping[index] = header;
+                }
+            });
 
             // Parse data
             excelData = [];
@@ -867,9 +900,10 @@ function handleFile(file) {
                     const rowData = {};
                     headers.forEach((header, index) => {
                         let value = row[index];
+                        const standardName = columnMapping[index];
 
-                        // Handle date conversion
-                        if (header === 'Data' && value !== undefined && value !== null && value !== '') {
+                        // Handle date conversion (case-insensitive)
+                        if (standardName === 'Data' && value !== undefined && value !== null && value !== '') {
                             if (value instanceof Date) {
                                 const day = String(value.getDate()).padStart(2, '0');
                                 const month = String(value.getMonth() + 1).padStart(2, '0');
@@ -885,7 +919,7 @@ function handleFile(file) {
                             value = value ? value.toString().trim() : '';
                         }
 
-                        rowData[header] = value;
+                        rowData[standardName] = value;
                     });
                     excelData.push(rowData);
                 }
