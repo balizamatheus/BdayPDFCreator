@@ -605,6 +605,14 @@ function checkWelcomeFilesLoaded() {
 }
 
 function startApplication() {
+    // Clear all selections when starting the application
+    selectedIndices.clear();
+    selectedMonths.clear();
+    modalSelectedIndices.clear();
+    modalSelectionsByMonth = {};
+    tempModalSelectionsByMonth = {};
+    currentModalMonth = null;
+    
     // Set global variables with welcome modal data
     excelData = welcomeExcelData;
     pdfTemplateBytes = welcomeTemplateBytes;
@@ -664,6 +672,14 @@ function startApplication() {
 }
 
 function handleFile(file) {
+    // Clear all selections when uploading a new file
+    selectedIndices.clear();
+    selectedMonths.clear();
+    modalSelectedIndices.clear();
+    modalSelectionsByMonth = {};
+    tempModalSelectionsByMonth = {};
+    currentModalMonth = null;
+    
     // Validate file type
     const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
     const fileExt = file.name.split('.').pop().toLowerCase();
@@ -1695,6 +1711,10 @@ function resetUpload() {
     dataByMonth = {};
     selectedIndices.clear();
     selectedMonths.clear();
+    modalSelectedIndices.clear();
+    modalSelectionsByMonth = {};
+    tempModalSelectionsByMonth = {};
+    currentModalMonth = null;
 }
 
 function resetAll() {
@@ -1704,6 +1724,10 @@ function resetAll() {
     generatedPDFs = [];
     selectedIndices.clear();
     selectedMonths.clear();
+    modalSelectedIndices.clear();
+    modalSelectionsByMonth = {};
+    tempModalSelectionsByMonth = {};
+    currentModalMonth = null;
 }
 
 
