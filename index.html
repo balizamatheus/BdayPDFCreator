@@ -221,6 +221,21 @@
                             </svg>
                         </button>
                     </div>
+                    <!-- Template Selector (shown when default template is used) -->
+                    <div class="template-selector" id="templateSelector" style="display: none;">
+                        <div class="template-selector-header">
+                            <label class="checkbox-label checkbox-header">
+                                <input type="checkbox" id="useTemplateSemAssinatura" onchange="toggleTemplateSemAssinatura()">
+                                <span>Sem assinatura</span>
+                            </label>
+                        </div>
+                        <label for="defaultTemplateSelect">Selecione o template padrão:</label>
+                        <select id="defaultTemplateSelect" onchange="changeDefaultTemplate()">
+                            <option value="Template.pdf">Template (padrão)</option>
+                            <option value="Template_sem_assinatura.pdf">Template sem assinatura</option>
+                            <option value="Template2.pdf">Template 2</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Field Positioning -->

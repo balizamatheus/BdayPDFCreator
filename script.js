@@ -513,6 +513,7 @@ async function loadDefaultTemplate() {
 function toggleDefaultTemplateMain() {
     const useDefaultCheckbox = document.getElementById('useDefaultTemplateMain');
     const checkboxHeader = useDefaultCheckbox.closest('.checkbox-header');
+    const templateSelector = document.getElementById('templateSelector');
     
     if (useDefaultCheckbox.checked) {
         useDefaultTemplateMain = true;
@@ -523,6 +524,11 @@ function toggleDefaultTemplateMain() {
         pdfTemplateInfo.style.display = 'flex';
         pdfTemplateName.textContent = 'Template.pdf (padrão)';
         pdfTemplateSize.textContent = 'Carregando...';
+        
+        // Show template selector
+        if (templateSelector) {
+            templateSelector.style.display = 'block';
+        }
         
         // Load default template
         loadDefaultTemplateMain();
@@ -537,6 +543,11 @@ function toggleDefaultTemplateMain() {
         pdfTemplateDoc = null;
         fieldPositioning.style.display = 'none';
         
+        // Hide template selector
+        if (templateSelector) {
+            templateSelector.style.display = 'none';
+        }
+        
         // Hide PDF frame, show placeholder
         pdfPreviewFrame.style.display = 'none';
         canvasPlaceholder.style.display = 'block';
@@ -546,17 +557,37 @@ function toggleDefaultTemplateMain() {
 // Load default template from src folder for workbench
 async function loadDefaultTemplateMain() {
     try {
-        const response = await fetch('src/Template.pdf');
+        // Get selected template from dropdown
+        const templateSelect = document.getElementById('defaultTemplateSelect');
+        const templateName = templateSelect ? templateSelect.value : 'Template.pdf';
+        
+        const response = await fetch(`src/${templateName}`);
         if (!response.ok) {
-            throw new Error('Não foi possível carregar o template padrão');
+            throw new Error(`Não foi possível carregar o template ${templateName}`);
         }
         
         const arrayBuffer = await response.arrayBuffer();
         pdfTemplateBytes = arrayBuffer;
         pdfTemplateDoc = await PDFLib.PDFDocument.load(pdfTemplateBytes);
         
-        // Update file info with file size
+        // Update file info with file size and template name
         pdfTemplateSize.textContent = formatFileSize(arrayBuffer.byteLength);
+        pdfTemplateName.textContent = `${templateName} (padrão)`;
+        
+        // Synchronize the "Sem assinatura" checkbox with the dropdown selection
+        const semAssinaturaCheckbox = document.getElementById('useTemplateSemAssinatura');
+        if (semAssinaturaCheckbox) {
+            semAssinaturaCheckbox.checked = (templateName === 'Template_sem_assinatura.pdf');
+            // Add or remove active class based on checkbox state
+            const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+            if (checkboxLabel) {
+                if (semAssinaturaCheckbox.checked) {
+                    checkboxLabel.classList.add('active');
+                } else {
+                    checkboxLabel.classList.remove('active');
+                }
+            }
+        }
         
         // Show field positioning
         fieldPositioning.style.display = 'block';
@@ -568,10 +599,10 @@ async function loadDefaultTemplateMain() {
         pdfPreviewFrame.style.display = 'block';
         canvasPlaceholder.style.display = 'none';
         
-        showSuccessAlert('Template padrão carregado com sucesso!');
+        showSuccessAlert(`Template padrão ${templateName} carregado com sucesso!`);
     } catch (error) {
         console.error('Erro ao carregar template padrão:', error);
-        showErrorAlert('Erro ao carregar o template padrão. Verifique se o arquivo src/Template.pdf existe.');
+        showErrorAlert('Erro ao carregar o template padrão. Verifique se o arquivo existe na pasta src/.');
         
         // Reset checkbox and show upload box
         const useDefaultCheckbox = document.getElementById('useDefaultTemplateMain');
@@ -583,6 +614,11 @@ async function loadDefaultTemplateMain() {
             checkboxHeader.classList.remove('active');
         }
         
+        const templateSelector = document.getElementById('templateSelector');
+        if (templateSelector) {
+            templateSelector.style.display = 'none';
+        }
+        
         pdfTemplateBox.style.display = 'block';
         pdfTemplateInfo.style.display = 'none';
         pdfTemplateBytes = null;
@@ -592,6 +628,31 @@ async function loadDefaultTemplateMain() {
         // Hide PDF frame, show placeholder
         pdfPreviewFrame.style.display = 'none';
         canvasPlaceholder.style.display = 'block';
+    }
+}
+
+// Change default template when dropdown selection changes
+function changeDefaultTemplate() {
+    const templateSelect = document.getElementById('defaultTemplateSelect');
+    const semAssinaturaCheckbox = document.getElementById('useTemplateSemAssinatura');
+    
+    if (templateSelect && useDefaultTemplateMain) {
+        // Synchronize the "Sem assinatura" checkbox with the dropdown selection
+        if (semAssinaturaCheckbox) {
+            semAssinaturaCheckbox.checked = (templateSelect.value === 'Template_sem_assinatura.pdf');
+            // Add or remove active class based on checkbox state
+            const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+            if (checkboxLabel) {
+                if (semAssinaturaCheckbox.checked) {
+                    checkboxLabel.classList.add('active');
+                } else {
+                    checkboxLabel.classList.remove('active');
+                }
+            }
+        }
+        
+        // Reload the template with the new selection
+        loadDefaultTemplateMain();
     }
 }
 
@@ -616,6 +677,9 @@ function startApplication() {
     // Set global variables with welcome modal data
     excelData = welcomeExcelData;
     pdfTemplateBytes = welcomeTemplateBytes;
+    
+    // Synchronize default template state with workbench
+    useDefaultTemplateMain = useDefaultTemplate;
 
     // Load PDF template document
     PDFLib.PDFDocument.load(pdfTemplateBytes).then((doc) => {
@@ -636,11 +700,69 @@ function startApplication() {
             pdfTemplateInfo.style.display = 'flex';
             pdfTemplateName.textContent = 'Template.pdf (padrão)';
             pdfTemplateSize.textContent = formatFileSize(pdfTemplateBytes.byteLength);
+            
+            // Synchronize checkbox state
+            const useDefaultCheckboxMain = document.getElementById('useDefaultTemplateMain');
+            if (useDefaultCheckboxMain) {
+                useDefaultCheckboxMain.checked = true;
+                const checkboxHeader = useDefaultCheckboxMain.closest('.checkbox-header');
+                if (checkboxHeader) {
+                    checkboxHeader.classList.add('active');
+                }
+            }
+            
+            // Show template selector
+            const templateSelector = document.getElementById('templateSelector');
+            if (templateSelector) {
+                templateSelector.style.display = 'block';
+            }
+            
+            // Reset "Sem assinatura" checkbox to default state
+            const semAssinaturaCheckbox = document.getElementById('useTemplateSemAssinatura');
+            if (semAssinaturaCheckbox) {
+                semAssinaturaCheckbox.checked = false;
+                const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+                if (checkboxLabel) {
+                    checkboxLabel.classList.remove('active');
+                }
+            }
+            
+            // Reset dropdown to default template
+            const templateSelect = document.getElementById('defaultTemplateSelect');
+            if (templateSelect) {
+                templateSelect.value = 'Template.pdf';
+            }
         } else if (welcomeTemplateFile) {
             pdfTemplateBox.style.display = 'none';
             pdfTemplateInfo.style.display = 'flex';
             pdfTemplateName.textContent = welcomeTemplateFile.name;
             pdfTemplateSize.textContent = formatFileSize(welcomeTemplateFile.size);
+            
+            // Ensure checkbox is unchecked
+            const useDefaultCheckboxMain = document.getElementById('useDefaultTemplateMain');
+            if (useDefaultCheckboxMain) {
+                useDefaultCheckboxMain.checked = false;
+                const checkboxHeader = useDefaultCheckboxMain.closest('.checkbox-header');
+                if (checkboxHeader) {
+                    checkboxHeader.classList.remove('active');
+                }
+            }
+            
+            // Reset "Sem assinatura" checkbox
+            const semAssinaturaCheckbox = document.getElementById('useTemplateSemAssinatura');
+            if (semAssinaturaCheckbox) {
+                semAssinaturaCheckbox.checked = false;
+                const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+                if (checkboxLabel) {
+                    checkboxLabel.classList.remove('active');
+                }
+            }
+            
+            // Hide template selector
+            const templateSelector = document.getElementById('templateSelector');
+            if (templateSelector) {
+                templateSelector.style.display = 'none';
+            }
         }
 
         // Display preview in the main app
@@ -1425,6 +1547,22 @@ function resetPDFTemplate() {
         }
     }
 
+    // Hide template selector
+    const templateSelector = document.getElementById('templateSelector');
+    if (templateSelector) {
+        templateSelector.style.display = 'none';
+    }
+    
+    // Reset "Sem assinatura" checkbox
+    const semAssinaturaCheckbox = document.getElementById('useTemplateSemAssinatura');
+    if (semAssinaturaCheckbox) {
+        semAssinaturaCheckbox.checked = false;
+        const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+        if (checkboxLabel) {
+            checkboxLabel.classList.remove('active');
+        }
+    }
+
     // Hide PDF frame, show placeholder
     pdfPreviewFrame.style.display = 'none';
     canvasPlaceholder.style.display = 'block';
@@ -1437,6 +1575,36 @@ function resetPDFTemplate() {
     };
 
     updateFieldList();
+}
+
+// Toggle "Sem assinatura" template option
+function toggleTemplateSemAssinatura() {
+    const semAssinaturaCheckbox = document.getElementById('useTemplateSemAssinatura');
+    const templateSelect = document.getElementById('defaultTemplateSelect');
+    
+    if (semAssinaturaCheckbox && templateSelect) {
+        if (semAssinaturaCheckbox.checked) {
+            // Add active class to checkbox
+            const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+            if (checkboxLabel) {
+                checkboxLabel.classList.add('active');
+            }
+            // Select the "Template sem assinatura" option
+            templateSelect.value = 'Template_sem_assinatura.pdf';
+            // Trigger the change event to load the template
+            changeDefaultTemplate();
+        } else {
+            // Remove active class from checkbox
+            const checkboxLabel = semAssinaturaCheckbox.closest('.checkbox-label');
+            if (checkboxLabel) {
+                checkboxLabel.classList.remove('active');
+            }
+            // Revert to the default template
+            templateSelect.value = 'Template.pdf';
+            // Trigger the change event to load the template
+            changeDefaultTemplate();
+        }
+    }
 }
 
 function initializeFieldInputs() {
@@ -1877,6 +2045,12 @@ async function generateAllPDFTemplateCards() {
 
     progressModal.style.display = 'none';
     displayResults();
+    
+    // Show success alert
+    showSuccessAlert(`${generatedPDFs.length} cartões gerados com sucesso!`);
+    
+    // Scroll to results panel section
+    resultsPanelSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Toolbar functionality
