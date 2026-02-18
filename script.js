@@ -1049,8 +1049,15 @@ function toggleMonthSelection(month) {
     const monthData = dataByMonth[month];
     if (!monthData) return;
 
+    const tab = document.querySelector(`.month-tab[data-month="${month}"]`);
     const checkbox = document.querySelector(`.month-tab-checkbox[data-month="${month}"]`);
-    const shouldSelect = checkbox.checked;
+    
+    // Check if the tab was in partial state before the click
+    const wasPartial = tab.classList.contains('partial');
+    
+    // If it was partial, deselect all (user wants to clear the partial selection)
+    // Otherwise, use the current checkbox state
+    const shouldSelect = wasPartial ? false : checkbox.checked;
 
     monthData.forEach(row => {
         if (shouldSelect) {
