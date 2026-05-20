@@ -27,6 +27,7 @@
     --background-card-content: rgba(44, 44, 44, 1);
     --glitter: url("https://assets.codepen.io/13471/noise-base.png");
     --glitter2: url("https://assets.codepen.io/13471/noise-top.png");
+    --workbench-texture: url("src/fundo.png");
     --ratio-x: .5;
     --ratio-y: .75;
     --light-size-small: 50px;
@@ -80,14 +81,24 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--bg-primary);
+    background: 
+        var(--workbench-texture),
+        color-mix(in srgb, var(--bg-secondary), transparent 0%);
+    background-size: 100px 50px, cover;
+    background-repeat: repeat, no-repeat;
+    background-blend-mode: overlay;
+    background-blend-mode: color-dodge;
+    background-blend-mode: luminosity;
+    background-blend-mode: normal;
+    background-blend-mode: screen;
+    background-blend-mode: multiply;
 }
 
 /* Header */
 .workbench-header {
     height: 60px;
     min-height: 60px;
-    background: var(--bg-secondary);
+    background: color-mix(in srgb, var(--bg-secondary), transparent 50%);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -162,7 +173,7 @@ body {
 
 /* Left Toolbar */
 .toolbar {
-    background: var(--bg-secondary);
+    background: color-mix(in srgb, var(--bg-secondary), transparent 50%);
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -208,7 +219,7 @@ body {
 
 /* Center Canvas Area */
 .canvas-area {
-    background: var(--bg-canvas);
+    background: color-mix(in srgb, var(--bg-secondary), transparent 50%);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -222,7 +233,6 @@ body {
 }
 
 .canvas-header {
-    background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
     padding: 10px 20px;
     display: flex;
@@ -270,6 +280,7 @@ body {
 }
 
 .canvas-content {
+    background: color-mix(in srgb, var(--bg-canvas), transparent 50%);
     flex: 1;
     display: flex;
     align-items: center;
@@ -305,7 +316,7 @@ body {
 
 /* Right Properties Panel */
 .properties-panel {
-    background: var(--bg-secondary);
+    background: color-mix(in srgb, var(--bg-secondary), transparent 50%);
     border-left: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -1513,7 +1524,7 @@ input[type="checkbox"]:focus {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 10001;
     max-width: 350px;
     width: 100%;
 }
