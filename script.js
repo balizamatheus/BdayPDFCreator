@@ -1695,9 +1695,9 @@ async function updatePDFPreview() {
     if (!pdfTemplateDoc) return;
 
     const sampleData = {
-        'Nome': 'Cel Av Nicolas Silva Mendes',
+        'Nome': 'Cel Av Aniversariante do Dia Nome Extendido',
         'Vocativo': 'Ao Senhor',
-        'Data': 'Brasília, 05 de Março de 2026'
+        'Data': 'Brasília, 01 de Janeiro de 2026'
     };
 
     try {
