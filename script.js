@@ -6,9 +6,9 @@ let templateType = 'pdf';
 let pdfTemplateBytes = null;
 let pdfTemplateDoc = null;
 let fieldPositions = {
-    'Nome': { x: 107, y: 380, size: 27, align: 'left' },
-    'Vocativo': { x: 115, y: 412, size: 14, align: 'left' },
-    'Data': { x: 765, y: 490, size: 18, align: 'right' }
+    'Nome': { x: 107, y: 380, size: 35, align: 'left' },
+    'Vocativo': { x: 115, y: 422, size: 16, align: 'left' },
+    'Data': { x: 765, y: 500, size: 16, align: 'right' }
 };
 let dataByMonth = {};
 let currentMonth = null;
@@ -1610,9 +1610,9 @@ function resetPDFTemplate() {
 
     // Reset field positions to default
     fieldPositions = {
-        'Nome': { x: 107, y: 380, size: 27, align: 'left' },
-        'Vocativo': { x: 115, y: 412, size: 14, align: 'left' },
-        'Data': { x: 765, y: 490, size: 18, align: 'right' }
+        'Nome': { x: 107, y: 380, size: 35, align: 'left' },
+        'Vocativo': { x: 115, y: 422, size: 16, align: 'left' },
+        'Data': { x: 765, y: 500, size: 16, align: 'right' }
     };
 
     updateFieldList();
